@@ -26,7 +26,7 @@ export default function AppRouter() {
       children: [
         {
           index: true,
-          element: <Navigate to="/dashboard" replace />
+          element: <Navigate to="/chat" replace />
         },
         {
           path: '/chat',
