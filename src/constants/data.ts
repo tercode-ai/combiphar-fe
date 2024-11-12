@@ -4,14 +4,14 @@ export const navItems: NavItem[] = [
   {
     title: 'Chat',
     href: '/chat',
-    icon: 'dashboard',
+    icon: 'chat',
     label: 'Chat'
   },
   {
-    title: 'Upload File',
-    href: '/upload-file',
+    title: 'Files',
+    href: '/files',
     icon: 'post',
-    label: 'Upload File'
+    label: 'Files'
   }
 ];
 

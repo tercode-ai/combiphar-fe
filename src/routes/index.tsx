@@ -33,7 +33,7 @@ export default function AppRouter() {
           element: <ChatPage />
         },
         {
-          path: '/upload-file',
+          path: '/files',
           element: <UploadFilePage />
         }
       ]

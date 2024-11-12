@@ -17,6 +17,7 @@ import {
   LogIn,
   LucideIcon,
   LucideProps,
+  MessagesSquare,
   Moon,
   MoreVertical,
   Pizza,
@@ -34,6 +35,7 @@ import {
 export type Icon = LucideIcon;
 
 export const Icons = {
+  chat: MessagesSquare,
   dashboard: LayoutDashboardIcon,
   logo: Command,
   login: LogIn,

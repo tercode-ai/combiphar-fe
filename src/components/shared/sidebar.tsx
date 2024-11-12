@@ -39,7 +39,7 @@ export default function Sidebar({ className }: SidebarProps) {
       >
         {!isMinimized && (
           <h1 className="text-lg font-bold text-primary-foreground">
-            Combiphar ChatApp
+            Combiphar GPT
           </h1>
         )}
         <ChevronsLeft

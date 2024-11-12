@@ -21,7 +21,7 @@ export default function MainLayout({
         <div className="h-10">
           <Header onToggleClick={() => setSidebarOpen(true)} />
         </div>
-        <main className="relative mt-8 h-screen overflow-hidden bg-background focus:outline-none">
+        <main className="relative mt-8 h-screen overflow-auto bg-background focus:outline-none">
           {children}
         </main>
       </div>
