@@ -1,0 +1,12 @@
+version: '1.0.1'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dashboard-llm
+    ports:
+      - '8060:8060'
+    volumes:
+      - .:/app
