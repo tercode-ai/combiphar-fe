@@ -1,10 +1,14 @@
 import { chat } from '@/lib/api';
 import { ChatResponse, ChatInput } from '@/types/chat';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, UseMutationOptions } from '@tanstack/react-query';
 
-export const useAskChat = (input: ChatInput) => {
-  return useQuery<ChatResponse>({
-    queryKey: ['ask_chat'],
-    queryFn: async () => chat.ask(input)
+export const useChat = (
+  options?: UseMutationOptions<ChatResponse, Error, ChatInput>
+) => {
+  return useMutation<ChatResponse, Error, ChatInput>({
+    mutationFn: async (variables: ChatInput) => {
+      return chat.ask(variables);
+    },
+    ...options
   });
 };

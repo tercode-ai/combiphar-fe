@@ -1,11 +1,14 @@
 import { MenuIcon } from 'lucide-react';
 import { ModeToggle } from './theme-toggle';
+import { Button } from '../ui/button';
+import { useChatStore } from '@/hooks/use-chatstore';
 
 interface HeaderProps {
   onToggleClick: () => void;
 }
 
 export default function Header({ onToggleClick }: HeaderProps) {
+  const { resetChat } = useChatStore();
   return (
     <div className="flex flex-1 items-center justify-between bg-background px-6 py-[1.15rem]">
       <div className="flex gap-4">
@@ -21,7 +24,15 @@ export default function Header({ onToggleClick }: HeaderProps) {
           {/* <Breadcrumbs items={routes} /> */}
         </div>
       </div>
-      <div className="relative flex items-center gap-6">
+      <div className="relative flex items-center gap-2">
+        <Button
+          variant="outline"
+          className="rounded-md text-sm"
+          onClick={resetChat}
+        >
+          {/* <X className="mr-2 size-5" /> */}
+          Clear Chat
+        </Button>
         <ModeToggle />
       </div>
     </div>

@@ -8,19 +8,22 @@ import { ChatInput } from '@/components/ui/chat/chat-input';
 import { ChatMessageList } from '@/components/ui/chat/chat-message-list';
 import { Button } from '@/components/ui/button';
 import {
+  ArrowUp,
   CopyIcon,
-  CornerDownLeft,
-  Mic,
-  Paperclip,
+  // CornerDownLeft,
+  // Mic,
+  // Paperclip,
   RefreshCcw,
   Volume2
 } from 'lucide-react';
-import { useChat } from 'ai/react';
 import React from 'react';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import CodeDisplayBlock from '@/components/shared/code-display-block';
-import { messages } from '@/constants/chat';
+import { useChat } from './queries';
+import { useChatStore } from '@/hooks/use-chatstore';
+import { ScrollArea } from '@/components/ui/scroll-area';
+// import { messages } from '@/constants/chat';
 
 const ChatAiIcons = [
   {
@@ -38,28 +41,41 @@ const ChatAiIcons = [
 ];
 
 const ChatPage = () => {
-  const [isGenerating, setIsGenerating] = React.useState(false);
-  const {
-    // messages,
-    // setMessages,
-    input,
-    handleInputChange,
-    handleSubmit,
-    isLoading,
-    reload
-  } = useChat({
-    onResponse(response) {
-      if (response) {
-        console.log(response);
-        setIsGenerating(false);
-      }
-    },
-    onError(error) {
-      if (error) {
-        setIsGenerating(false);
-      }
-    }
-  });
+  const [isGenerating, setIsGenerating] = React.useState<boolean>(false);
+  const [input, setInput] = React.useState<string>('');
+
+  const { messages, addChat } = useChatStore();
+
+  const { mutate, isPending, data } = useChat();
+  // const {
+  //   messages,
+  //   // setMessages,
+  //   input,
+  //   handleInputChange,
+  //   handleSubmit,
+  //   isLoading,
+  //   reload
+  // } = useChat({
+  //   onResponse(response) {
+  //     if (response) {
+  //       console.log(response);
+  //       setIsGenerating(false);
+  //     }
+  //   },
+  //   onError(error) {
+  //     if (error) {
+  //       setIsGenerating(false);
+  //     }
+  //   }
+  // });
+
+  const handleSubmit = async () => {
+    setInput('');
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    mutate({
+      question: input
+    });
+  };
 
   const messagesRef = React.useRef<HTMLDivElement>(null);
   const formRef = React.useRef<HTMLFormElement>(null);
@@ -73,14 +89,18 @@ const ChatPage = () => {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsGenerating(true);
-    handleSubmit(e);
+    addChat({
+      id: new Date().getTime().toString(),
+      role: 'user',
+      message: input
+    });
+    handleSubmit();
   };
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      if (isGenerating || isLoading || !input) return;
-      setIsGenerating(true);
+      if (isGenerating || isPending || !input) return;
       onSubmit(e as unknown as React.FormEvent<HTMLFormElement>);
     }
   };
@@ -90,7 +110,7 @@ const ChatPage = () => {
     if (action === 'Refresh') {
       setIsGenerating(true);
       try {
-        await reload();
+        // await reload();
       } catch (error) {
         console.error('Error reloading:', error);
       } finally {
@@ -101,16 +121,31 @@ const ChatPage = () => {
     if (action === 'Copy') {
       const message = messages[messageIndex];
       if (message && message.role === 'assistant') {
-        navigator.clipboard.writeText(message.content);
+        navigator.clipboard.writeText(message.message);
       }
     }
   };
+
+  React.useEffect(() => {
+    if (!isPending) setIsGenerating(false);
+  }, [isPending]);
+
+  React.useEffect(() => {
+    if (data) {
+      addChat({
+        id: new Date().getTime().toString(),
+        role: 'assistant',
+        message: data?.result.answer
+      });
+    }
+  }, [addChat, data]);
+
   return (
-    <div className="mx-auto flex h-full w-full max-w-3xl flex-col items-center py-6">
-      <ChatMessageList ref={messagesRef}>
+    <ScrollArea className="flex h-[calc(100vh-7.5rem)] w-full flex-col items-center py-6">
+      <ChatMessageList ref={messagesRef} className="mx-auto max-w-3xl">
         {/* Initial Message */}
         {messages.length === 0 && (
-          <div className="flex w-full flex-col gap-2 rounded-lg border bg-background p-8 shadow-sm">
+          <div className="flex max-w-3xl flex-col gap-2 rounded-lg border bg-background p-8 shadow-sm">
             <h1 className="font-bold">Welcome to this example app.</h1>
             <p className="text-sm text-muted-foreground">
               This is a simple Next.JS example application created using{' '}
@@ -166,10 +201,10 @@ const ChatPage = () => {
             >
               <ChatBubbleAvatar
                 src=""
-                fallback={message.role == 'user' ? '👨🏽' : '🤖'}
+                fallback={message.role == 'user' ? 'D' : '🤖'}
               />
-              <ChatBubbleMessage>
-                {message.content
+              <ChatBubbleMessage className="">
+                {message.message
                   .split('```')
                   .map((part: string, index: number) => {
                     if (index % 2 === 0) {
@@ -222,43 +257,32 @@ const ChatPage = () => {
           </ChatBubble>
         )}
       </ChatMessageList>
-      <div className="w-full px-4">
+      <div className="flex justify-center px-4">
         <form
           ref={formRef}
           onSubmit={onSubmit}
-          className="relative rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring"
+          className="fixed bottom-4 mx-auto w-5/12 rounded-full border bg-background focus-within:ring-1 focus-within:ring-ring"
         >
-          <ChatInput
-            value={input}
-            onKeyDown={onKeyDown}
-            onChange={handleInputChange}
-            placeholder="Type your message here..."
-            className="min-h-12 resize-none rounded-lg border-0 bg-background p-3 shadow-none focus-visible:ring-0"
-          />
-          <div className="flex items-center p-3 pt-0">
-            <Button variant="ghost" size="icon">
-              <Paperclip className="size-4" />
-              <span className="sr-only">Attach file</span>
-            </Button>
-
-            <Button variant="ghost" size="icon">
-              <Mic className="size-4" />
-              <span className="sr-only">Use Microphone</span>
-            </Button>
-
+          <div className="flex items-center justify-between px-3">
+            <ChatInput
+              value={input}
+              onKeyDown={onKeyDown}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Type message here"
+              className="min-h-12 resize-none rounded-lg border-0 bg-background p-3 shadow-none focus-visible:ring-0"
+            />
             <Button
-              disabled={!input || isLoading}
+              disabled={!input || isPending}
               type="submit"
               size="sm"
-              className="ml-auto gap-1.5"
+              className="size-8 rounded-full p-0"
             >
-              Send Message
-              <CornerDownLeft className="size-3.5" />
+              <ArrowUp className="size-5" />
             </Button>
           </div>
         </form>
       </div>
-    </div>
+    </ScrollArea>
   );
 };
 

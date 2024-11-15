@@ -3,10 +3,18 @@ export type ChatInput = {
 };
 
 export type ChatResponse = {
-  result: {
-    answer: string;
-    source_documents: SourceDocument[];
-  };
+  result: ChatResult;
+};
+
+export type ChatResult = {
+  answer: string;
+  source_documents: SourceDocument[];
+};
+
+export type Message = {
+  id: string;
+  role: 'user' | 'assistant';
+  message: string;
 };
 
 type SourceDocument = {
