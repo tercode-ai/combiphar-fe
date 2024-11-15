@@ -48,8 +48,8 @@ export default function UserAuthForm() {
     setLoading(true);
 
     const credential = {
-      email: 'test@mail.com',
-      password: 'samsat@2024'
+      email: 'combiphar@mail.dev',
+      password: '#combiphar@2024#'
     };
 
     await new Promise((resolve) => setTimeout(resolve, 1000));

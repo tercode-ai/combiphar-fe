@@ -1,14 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { toast } from '@/components/ui/use-toast';
-import {
-  CountBpkaInput,
-  ListKecamatanInput,
-  ListKelurahanInput
-} from '@/types/dashboard';
-import { ListRanmorInput } from '@/types/ranmor';
-import { CountTemuanInput, ListTemuanInput } from '@/types/temuan';
+
 import axios from 'axios';
 import { capitalizeFirstLetter } from './utils';
+import { ChatInput } from '@/types/chat';
 // ---------------------------- Student API ------------------------------------------------- //
 // export async function resendEmail(email: string) {
 //     try {
@@ -21,17 +16,49 @@ import { capitalizeFirstLetter } from './utils';
 // }
 
 export const apiClient = {
-  async fetch(path: string, input: any) {
+  async get(path: string) {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_ENDPOINT}${path}`
+      );
+      return response.data;
+    } catch (error: any) {
+      toast({
+        variant: 'destructive',
+        description: capitalizeFirstLetter(
+          error.response?.data?.error || 'An error occurred'
+        )
+      });
+      return error;
+    }
+  },
+  async post(path: string, input: any) {
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_ENDPOINT}${path}`,
         {
           ...input
-        },
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      toast({
+        variant: 'destructive',
+        description: capitalizeFirstLetter(
+          error.response?.data?.error || 'An error occurred'
+        )
+      });
+      return error;
+    }
+  },
+  async postFile(path: string, file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_ENDPOINT}${path}`,
         {
-          headers: {
-            'x-api-key': import.meta.env.VITE_API_KEY
-          }
+          formData
         }
       );
       return response.data;
@@ -47,49 +74,11 @@ export const apiClient = {
   }
 };
 
-export async function getStudents(
-  offset: number,
-  pageLimit: number,
-  country: string
-) {
-  try {
-    const res = await axios.get(
-      `https://api.slingacademy.com/v1/sample-data/users?offset=${offset}&limit=${pageLimit}` +
-        (country ? `&search=${country}` : '')
-    );
-    return res.data;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
-}
-
-export const dashboard = {
-  count: (input: CountBpkaInput) => apiClient.fetch('/count-bpka', input),
-  listKabupaten: () => apiClient.fetch('/count-bpka-kabupaten', {}),
-  listKecamatan: (input: ListKecamatanInput) =>
-    apiClient.fetch('/count-bpka-kecamatan', input),
-  listKelurahan: (input: ListKelurahanInput) =>
-    apiClient.fetch('/count-bpka-kelurahan', input),
-  lastSynced: () =>
-    apiClient.fetch('/list-ranmor', {
-      page: 1,
-      limit: 1,
-      orders: [
-        {
-          order_by: 'sync_at',
-          sort_by: 'desc'
-        }
-      ]
-    })
+export const file = {
+  list: () => apiClient.get('/docs'),
+  upload: (payload: File) => apiClient.postFile('/upload', payload)
 };
 
-export const ranmor = {
-  list: (input: ListRanmorInput) => apiClient.fetch('/list-ranmor', input)
-};
-
-export const temuan = {
-  count: (type: CountTemuanInput) =>
-    apiClient.fetch('/count-bpka-temuan', type),
-  list: (input: ListTemuanInput) => apiClient.fetch('/list-bpka-temuan', input)
+export const chat = {
+  ask: (payload: ChatInput) => apiClient.post('/ask', payload)
 };

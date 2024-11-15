@@ -1,35 +1,40 @@
-import { UploadedFile } from '@/constants/files';
-import { ExternalLink, File } from 'lucide-react';
+import { File } from 'lucide-react';
+import { useGetFiles } from './queries';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import { LoaderCircle } from '@/components/shared/loader';
+dayjs.extend(utc);
 
-interface UploadedFilesProps {
-  files: UploadedFile[];
-}
+export const FileList = () => {
+  const { data: files, isLoading } = useGetFiles();
 
-export const FileList = (props: UploadedFilesProps) => {
-  const { files } = props;
+  if (isLoading) return <LoaderCircle />;
 
   return (
     <div className="flex w-full flex-col gap-4">
-      {files.map((file, index) => (
-        <a
-          href={file.url}
-          target="_blank"
+      {files?.map(({ file, timestamp }, index) => (
+        <div
           key={index}
-          className="flex w-full flex-row items-center gap-4 rounded-lg border p-2 duration-100 hover:cursor-pointer hover:border-gray-700 hover:ease-in dark:hover:border-gray-300"
+          className="flex w-full flex-row items-center gap-4 rounded-lg border p-2 duration-100 "
         >
           <div className="flex w-full items-center gap-2">
             <span className="flex size-12 items-center justify-center">
               <File className="size-9" />
             </span>
             <div>
-              <h1 className="text-sm font-semibold">{file.name}</h1>
-              <p className="text-sm text-muted-foreground">Subtitle</p>
+              <h1 className="text-sm font-semibold">{file}</h1>
+              <p className="text-sm text-muted-foreground">
+                {dayjs
+                  .utc(timestamp)
+                  .add(7, 'hour')
+                  .format('ddd, DD MMM YYYY HH:mm')}
+              </p>
             </div>
           </div>
-          <div className="pr-2">
+          {/* <div className="pr-2">
             <ExternalLink className="size-4" />
-          </div>
-        </a>
+          </div> */}
+        </div>
       ))}
     </div>
   );

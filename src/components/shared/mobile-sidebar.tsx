@@ -27,7 +27,7 @@ export default function MobileSidebar({
         <div className="space-y-42">
           <div className="space-y-8 px-3 py-2">
             <Link to="/" className="px-5 py-2 text-xl font-bold">
-              Combiphar GPT
+              Combiphar POC LLM
             </Link>
             <div className="space-y-1 px-2">
               <DashboardNav items={navItems} setOpen={setSidebarOpen} />
