@@ -83,14 +83,12 @@ export const apiClient = {
         }
       );
       return response.data;
-    } catch (error: any) {
-      toast({
-        variant: 'destructive',
-        description: capitalizeFirstLetter(
-          error.response?.data?.error || 'An error occurred'
-        )
-      });
-      return error;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.log(error);
+        throw new Error(error.response?.data?.message || 'File upload failed');
+      }
+      throw error;
     }
   }
 };

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { CircleCheck, CircleX, File, Upload, X } from 'lucide-react';
+import { CircleCheck, CircleX, File, Loader2, Upload, X } from 'lucide-react';
 import React, { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 
@@ -16,20 +16,16 @@ interface FileUploadProps {
   accept: {
     [mimeType: string]: string[];
   };
-  // onUploadSubmit: () => void;
-  // loading?: any;
 }
 
 export function FileUpload({
   accept,
   maxFiles = 1,
   maxSize = 2
-  // onUploadSubmit,
-  // loading
 }: FileUploadProps) {
   const isImage = Object.keys(accept)[0].includes('image/');
 
-  const { files: fileStatus, setFiles } = useFiles();
+  const { files: fileStatus, setFiles, isSubmitting } = useFiles();
 
   const files = React.useMemo(
     () => fileStatus.map((item) => item.file),
@@ -52,11 +48,12 @@ export function FileUpload({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [files, maxFiles]
   );
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept,
     onDrop,
     maxFiles,
-    multiple: false,
+    multiple: true,
     maxSize: maxSize * 1024 * 1024
   });
 
@@ -124,7 +121,7 @@ export function FileUpload({
         {fileStatus.map((fs, index) => (
           <div
             className="flex justify-between rounded-md border px-4 py-3"
-            key={fs.id}
+            key={index}
           >
             <div className="flex items-center gap-4 text-sm">
               <div className={cn('relative', isImage ? 'size-16' : 'size-8')}>
@@ -148,10 +145,13 @@ export function FileUpload({
                 <span className="text-xs text-gray-500">
                   {formatBytes(fs.file.size)}
                 </span>
+                <span className="text-xs tracking-tight text-destructive">
+                  {fs.errorMessage}
+                </span>
               </div>
             </div>
             <div className="flex items-center">
-              {fs.status === 'pending' && (
+              {fs.status === 'pending' && !isSubmitting && (
                 <Button
                   variant="link"
                   size="icon"
@@ -166,6 +166,9 @@ export function FileUpload({
               )}
               {fs.status === 'failed' && (
                 <CircleX className="text-destructive" />
+              )}
+              {fs.status === 'processing' && (
+                <Loader2 className="animate-spin text-gray-500" />
               )}
             </div>
           </div>

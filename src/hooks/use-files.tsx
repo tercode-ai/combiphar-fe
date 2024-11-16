@@ -1,18 +1,23 @@
 import { create } from 'zustand';
 
+type fileStatus = 'pending' | 'success' | 'failed' | 'processing';
+
 export interface FileUploadStatus {
   id: string;
   file: File;
-  status: 'pending' | 'success' | 'failed';
+  status: fileStatus;
   errorMessage?: string;
 }
 
 interface FileStore {
   files: FileUploadStatus[];
+  isSubmitting: boolean;
+
+  setIsSubmitting: (value: boolean) => void;
   setFiles: (files: File[]) => void;
   setFileStatus: (
     id: string,
-    status: 'pending' | 'success' | 'failed',
+    status: fileStatus,
     errorMessage?: string
   ) => void;
   addFile: (file: File) => void;
@@ -20,7 +25,9 @@ interface FileStore {
 
 export const useFiles = create<FileStore>((set) => ({
   files: [],
+  isSubmitting: false,
 
+  setIsSubmitting: (value) => set({ isSubmitting: value }),
   setFiles: (files: File[]) => {
     const fileStatuses: FileUploadStatus[] = files.map((file) => ({
       id: file.name + Date.now(),

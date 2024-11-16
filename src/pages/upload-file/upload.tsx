@@ -4,9 +4,10 @@ import { FileUpload } from '@/components/shared/file-upload';
 import { Button } from '@/components/ui/button';
 import { useDialog } from '@/hooks/use-dialog';
 import { FileUploadStatus, useFiles } from '@/hooks/use-files';
-import { Loader2, Upload } from 'lucide-react';
+import { Upload } from 'lucide-react';
 import React from 'react';
 import { useFileMutation } from './queries';
+import { refetchQueries } from '@/lib/refetcher';
 
 const DialogLayout = React.lazy(
   () => import('@/components/layout/dialog-layout')
@@ -14,22 +15,25 @@ const DialogLayout = React.lazy(
 
 export const UploadSection = () => {
   const { setOpen } = useDialog();
-  const { files, setFiles } = useFiles();
-  const { mutateAsync } = useFileMutation();
-  const [isSubmitting, setIsSubmitting] = React.useState<boolean>(false);
-
-  // console.log(files);
+  const { files, setFiles, isSubmitting, setIsSubmitting } = useFiles();
+  const { mutateAsync } = useFileMutation({
+    onSuccess: () => {
+      refetchQueries(['file_list']);
+    }
+  });
 
   const uploadFilesSequential = async (files: FileUploadStatus[]) => {
     const { setFileStatus } = useFiles.getState();
 
-    for (const item of files) {
+    const unsuccessfulFiles = files.filter((item) => item.status !== 'success');
+
+    for (const item of unsuccessfulFiles) {
       const fileId = item.id;
+      setFileStatus(fileId, 'processing');
       try {
         await mutateAsync({ file: item.file });
         setFileStatus(fileId, 'success');
       } catch (error: any) {
-        console.log('error');
         setFileStatus(fileId, 'failed', error.message);
       }
     }
@@ -55,7 +59,10 @@ export const UploadSection = () => {
     <>
       <Button
         className="fixed bottom-4 gap-4 px-10 font-semibold"
-        onClick={() => setOpen(true)}
+        onClick={() => {
+          setFiles([]);
+          setOpen(true);
+        }}
       >
         Upload <Upload className="size-4" />
       </Button>
@@ -72,7 +79,6 @@ export const UploadSection = () => {
               {isSubmitting ? (
                 <div className="flex items-center gap-2">
                   <span>Uploading</span>{' '}
-                  <Loader2 className="size-5 animate-spin" />
                 </div>
               ) : (
                 `Upload File${files.length > 1 ? 's' : ''}`
