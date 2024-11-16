@@ -4,6 +4,7 @@ import { toast } from '@/components/ui/use-toast';
 import axios from 'axios';
 import { capitalizeFirstLetter } from './utils';
 import { ChatInput } from '@/types/chat';
+import { FileUploadInput } from '@/types/file';
 // ---------------------------- Student API ------------------------------------------------- //
 // export async function resendEmail(email: string) {
 //     try {
@@ -68,14 +69,17 @@ export const apiClient = {
       return error;
     }
   },
-  async postFile(path: string, file: File) {
+  async postFile(path: string, { file }: FileUploadInput) {
     const formData = new FormData();
     formData.append('file', file);
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_ENDPOINT}${path}`,
+        formData,
         {
-          formData
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
         }
       );
       return response.data;
@@ -93,7 +97,7 @@ export const apiClient = {
 
 export const file = {
   list: () => apiClient.get('/docs'),
-  upload: (payload: File) => apiClient.postFile('/upload', payload)
+  upload: (payload: FileUploadInput) => apiClient.postFile('/upload', payload)
 };
 
 export const chat = {
