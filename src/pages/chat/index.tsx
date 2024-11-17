@@ -91,6 +91,21 @@ const ChatPage = () => {
   };
 
   const messagesRef = React.useRef<HTMLDivElement>(null);
+  const scrollAreaRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    if (!scrollAreaRef.current) return;
+
+    const scrollContainer = scrollAreaRef.current.querySelector(
+      '[data-radix-scroll-area-viewport]'
+    );
+    if (scrollContainer instanceof HTMLElement) {
+      scrollContainer.scrollTo({
+        top: scrollContainer.scrollHeight
+      });
+    }
+  }, [messages]);
+
   const formRef = React.useRef<HTMLFormElement>(null);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -149,7 +164,7 @@ const ChatPage = () => {
 
   return (
     <ScrollArea
-      ref={messagesRef}
+      ref={scrollAreaRef}
       className="flex h-[calc(100vh-7.5rem)] w-full flex-col items-center py-6"
     >
       <ChatMessageList ref={messagesRef} className="mx-auto max-w-3xl">
