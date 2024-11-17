@@ -9,12 +9,12 @@ import { ChatMessageList } from '@/components/ui/chat/chat-message-list';
 import { Button } from '@/components/ui/button';
 import {
   ArrowUp,
-  CopyIcon,
+  CopyIcon
   // CornerDownLeft,
   // Mic,
   // Paperclip,
-  RefreshCcw,
-  Volume2
+  // RefreshCcw,
+  // Volume2
 } from 'lucide-react';
 import React from 'react';
 import Markdown from 'react-markdown';
@@ -29,15 +29,15 @@ const ChatAiIcons = [
   {
     icon: CopyIcon,
     label: 'Copy'
-  },
-  {
-    icon: RefreshCcw,
-    label: 'Refresh'
-  },
-  {
-    icon: Volume2,
-    label: 'Volume'
   }
+  // {
+  //   icon: RefreshCcw,
+  //   label: 'Refresh'
+  // },
+  // {
+  //   icon: Volume2,
+  //   label: 'Volume'
+  // }
 ];
 
 const ChatPage = () => {
@@ -145,49 +145,16 @@ const ChatPage = () => {
       <ChatMessageList ref={messagesRef} className="mx-auto max-w-3xl">
         {/* Initial Message */}
         {messages.length === 0 && (
-          <div className="flex max-w-3xl flex-col gap-2 rounded-lg border bg-background p-8 shadow-sm">
-            <h1 className="font-bold">Welcome to this example app.</h1>
+          <div className="bg-backgroundp-8 flex h-full max-w-3xl flex-col items-center justify-center gap-2 rounded-lg">
+            <h1 className="text-xl font-bold">
+              Welcome to{' '}
+              <span className="bg-gradient-to-r from-[#532E91] to-[#D54399] bg-clip-text text-transparent">
+                Combiphar
+              </span>{' '}
+              Smart Chat!
+            </h1>
             <p className="text-sm text-muted-foreground">
-              This is a simple Next.JS example application created using{' '}
-              <a
-                href="https://github.com/jakobhoeg/shadcn-chat"
-                className="inline-flex flex-1 justify-center gap-1 font-bold leading-4 hover:underline"
-              >
-                shadcn-chat
-                <svg
-                  aria-hidden="true"
-                  height="7"
-                  viewBox="0 0 6 6"
-                  width="7"
-                  className="opacity-70"
-                >
-                  <path
-                    d="M1.25215 5.54731L0.622742 4.9179L3.78169 1.75597H1.3834L1.38936 0.890915H5.27615V4.78069H4.40513L4.41109 2.38538L1.25215 5.54731Z"
-                    fill="currentColor"
-                  ></path>
-                </svg>
-              </a>{' '}
-              components. It uses{' '}
-              <a
-                href="https://sdk.vercel.ai/"
-                className="inline-flex flex-1 justify-center gap-1 font-bold leading-4 hover:underline"
-              >
-                Vercel AI SDK
-                <svg
-                  aria-hidden="true"
-                  height="7"
-                  viewBox="0 0 6 6"
-                  width="7"
-                  className="opacity-70"
-                >
-                  <path
-                    d="M1.25215 5.54731L0.622742 4.9179L3.78169 1.75597H1.3834L1.38936 0.890915H5.27615V4.78069H4.40513L4.41109 2.38538L1.25215 5.54731Z"
-                    fill="currentColor"
-                  ></path>
-                </svg>
-              </a>{' '}
-              for the AI integration. Build chat interfaces like this at
-              lightspeed with shadcn-chat.
+              Feel free to ask me any questions or request help with your tasks.
             </p>
           </div>
         )}
@@ -225,24 +192,21 @@ const ChatPage = () => {
                 {message.role === 'assistant' &&
                   messages.length - 1 === index && (
                     <div className="mt-1.5 flex items-center gap-1">
-                      {!isGenerating && (
-                        <>
-                          {ChatAiIcons.map((icon, iconIndex) => {
-                            const Icon = icon.icon;
-                            return (
-                              <ChatBubbleAction
-                                variant="outline"
-                                className="size-5"
-                                key={iconIndex}
-                                icon={<Icon className="size-3" />}
-                                onClick={() =>
-                                  handleActionClick(icon.label, index)
-                                }
-                              />
-                            );
-                          })}
-                        </>
-                      )}
+                      {!isGenerating &&
+                        ChatAiIcons.map((icon, iconIndex) => {
+                          const Icon = icon.icon;
+                          return (
+                            <ChatBubbleAction
+                              variant="outline"
+                              className="size-5 bg-muted"
+                              key={iconIndex}
+                              icon={<Icon className="size-3" />}
+                              onClick={() =>
+                                handleActionClick(icon.label, index)
+                              }
+                            />
+                          );
+                        })}
                     </div>
                   )}
               </ChatBubbleMessage>

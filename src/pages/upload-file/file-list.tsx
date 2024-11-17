@@ -15,7 +15,7 @@ export const FileList = () => {
       {files?.map(({ file, timestamp }, index) => (
         <div
           key={index}
-          className="flex w-full flex-row items-center gap-4 rounded-lg border p-2 duration-100 "
+          className="flex w-full flex-row items-center gap-4 rounded-lg border p-2 duration-100"
         >
           <div className="flex w-full items-center gap-2">
             <span className="flex size-12 items-center justify-center">
@@ -31,11 +31,9 @@ export const FileList = () => {
               </p>
             </div>
           </div>
-          {/* <div className="pr-2">
-            <ExternalLink className="size-4" />
-          </div> */}
         </div>
       ))}
+      <div className="h-12" />
     </div>
   );
 };

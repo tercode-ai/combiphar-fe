@@ -25,7 +25,7 @@ export default function Sidebar({ className }: SidebarProps) {
   return (
     <nav
       className={cn(
-        `relative z-10 hidden h-screen flex-none bg-primary px-3 text-primary-foreground md:flex md:flex-col`,
+        `relative z-10 hidden h-screen flex-none bg-sidebar px-3 text-primary-foreground md:flex md:flex-col`,
         status && 'duration-500',
         !isMinimized ? 'w-64 2xl:w-72' : 'w-[90px]',
         className
@@ -38,7 +38,7 @@ export default function Sidebar({ className }: SidebarProps) {
         )}
       >
         {!isMinimized && (
-          <h1 className="text-lg font-bold text-primary-foreground">
+          <h1 className="font-bold text-primary-foreground">
             Combiphar POC LLM
           </h1>
         )}

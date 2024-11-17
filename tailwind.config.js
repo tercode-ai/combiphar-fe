@@ -50,6 +50,9 @@ export const theme = {
       card: {
         DEFAULT: 'hsl(var(--card))',
         foreground: 'hsl(var(--card-foreground))'
+      },
+      sidebar: {
+        DEFAULT: 'hsl(var(--sidebar))'
       }
     },
     borderRadius: {

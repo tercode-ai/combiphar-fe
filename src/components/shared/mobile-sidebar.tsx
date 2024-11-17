@@ -22,11 +22,11 @@ export default function MobileSidebar({
     <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
       <SheetContent
         side="left"
-        className="flex w-72 flex-col border-0 bg-primary !px-0 text-white"
+        className="flex w-72 flex-col border-0 bg-sidebar !px-0 text-white"
       >
         <div className="space-y-42">
           <div className="space-y-8 px-3 py-2">
-            <Link to="/" className="px-5 py-2 text-xl font-bold">
+            <Link to="/" className="px-5 py-2 font-bold">
               Combiphar POC LLM
             </Link>
             <div className="space-y-1 px-2">

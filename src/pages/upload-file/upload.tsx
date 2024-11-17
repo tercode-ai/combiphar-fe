@@ -58,7 +58,7 @@ export const UploadSection = () => {
   return (
     <>
       <Button
-        className="fixed bottom-4 gap-4 px-10 font-semibold"
+        className="fixed bottom-4 gap-4 bg-primary px-10 font-semibold transition-transform duration-100 ease-in hover:brightness-90"
         onClick={() => {
           setFiles([]);
           setOpen(true);

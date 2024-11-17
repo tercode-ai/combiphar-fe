@@ -85,7 +85,6 @@ export const apiClient = {
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.log(error);
         throw new Error(error.response?.data?.message || 'File upload failed');
       }
       throw error;
