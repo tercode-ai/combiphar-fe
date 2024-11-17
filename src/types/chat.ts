@@ -15,6 +15,7 @@ export type Message = {
   id: string;
   role: 'user' | 'assistant';
   message: string;
+  source_document?: SourceDocument;
 };
 
 type SourceDocument = {

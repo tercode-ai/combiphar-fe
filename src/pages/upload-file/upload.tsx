@@ -4,10 +4,10 @@ import { FileUpload } from '@/components/shared/file-upload';
 import { Button } from '@/components/ui/button';
 import { useDialog } from '@/hooks/use-dialog';
 import { FileUploadStatus, useFiles } from '@/hooks/use-files';
-import { Upload } from 'lucide-react';
 import React from 'react';
 import { useFileMutation } from './queries';
 import { refetchQueries } from '@/lib/refetcher';
+import { Upload } from 'lucide-react';
 
 const DialogLayout = React.lazy(
   () => import('@/components/layout/dialog-layout')
@@ -64,7 +64,7 @@ export const UploadSection = () => {
           setOpen(true);
         }}
       >
-        Upload <Upload className="size-4" />
+        Add Files
       </Button>
       <React.Suspense fallback="...">
         <DialogLayout
@@ -81,7 +81,10 @@ export const UploadSection = () => {
                   <span>Uploading</span>{' '}
                 </div>
               ) : (
-                `Upload File${files.length > 1 ? 's' : ''}`
+                <>
+                  {`Upload File${files.length > 1 ? 's' : ''}`}
+                  <Upload className="ml-2 size-4" />
+                </>
               )}
             </Button>
           }

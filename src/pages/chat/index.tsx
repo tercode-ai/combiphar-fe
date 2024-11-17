@@ -23,7 +23,6 @@ import CodeDisplayBlock from '@/components/shared/code-display-block';
 import { useChat } from './queries';
 import { useChatStore } from '@/hooks/use-chatstore';
 import { ScrollArea } from '@/components/ui/scroll-area';
-// import { messages } from '@/constants/chat';
 
 const ChatAiIcons = [
   {
@@ -46,7 +45,20 @@ const ChatPage = () => {
 
   const { messages, addChat } = useChatStore();
 
-  const { mutate, isPending, data } = useChat();
+  const { mutate, isPending } = useChat({
+    onSuccess: ({ result }) => {
+      addChat({
+        id: new Date().getTime().toString(),
+        role: 'assistant',
+        message: result.answer,
+        source_document:
+          result.source_documents.length > 1
+            ? result.source_documents[0]
+            : undefined
+      });
+    }
+  });
+
   // const {
   //   messages,
   //   // setMessages,
@@ -71,7 +83,7 @@ const ChatPage = () => {
 
   const handleSubmit = async () => {
     setInput('');
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 500));
     mutate({
       question: input
     });
@@ -130,15 +142,15 @@ const ChatPage = () => {
     if (!isPending) setIsGenerating(false);
   }, [isPending]);
 
-  React.useEffect(() => {
-    if (data) {
-      addChat({
-        id: new Date().getTime().toString(),
-        role: 'assistant',
-        message: data?.result.answer
-      });
-    }
-  }, [addChat, data]);
+  // React.useEffect(() => {
+  //   if (data) {
+  //     addChat({
+  //       id: new Date().getTime().toString(),
+  //       role: 'assistant',
+  //       message: data?.result.answer
+  //     });
+  //   }
+  // }, [addChat, data]);
 
   return (
     <ScrollArea className="flex h-[calc(100vh-7.5rem)] w-full flex-col items-center py-6">
@@ -161,54 +173,46 @@ const ChatPage = () => {
 
         {/* Messages */}
         {messages &&
-          messages.map((message, index) => (
+          messages.map(({ message, role }, index) => (
             <ChatBubble
               key={index}
-              variant={message.role == 'user' ? 'sent' : 'received'}
+              variant={role == 'user' ? 'sent' : 'received'}
             >
-              <ChatBubbleAvatar
-                src=""
-                fallback={message.role == 'user' ? 'D' : '🤖'}
-              />
+              <ChatBubbleAvatar src="" fallback={role == 'user' ? 'D' : '🤖'} />
               <ChatBubbleMessage className="">
-                {message.message
-                  .split('```')
-                  .map((part: string, index: number) => {
-                    if (index % 2 === 0) {
-                      return (
-                        <Markdown key={index} remarkPlugins={[remarkGfm]}>
-                          {part}
-                        </Markdown>
-                      );
-                    } else {
-                      return (
-                        <pre className="whitespace-pre-wrap pt-2" key={index}>
-                          <CodeDisplayBlock code={part} lang="" />
-                        </pre>
-                      );
-                    }
-                  })}
+                {message.split('```').map((part: string, index: number) => {
+                  if (index % 2 === 0) {
+                    return (
+                      <Markdown key={index} remarkPlugins={[remarkGfm]}>
+                        {part}
+                      </Markdown>
+                    );
+                  } else {
+                    return (
+                      <pre className="whitespace-pre-wrap pt-2" key={index}>
+                        <CodeDisplayBlock code={part} lang="" />
+                      </pre>
+                    );
+                  }
+                })}
 
-                {message.role === 'assistant' &&
-                  messages.length - 1 === index && (
-                    <div className="mt-1.5 flex items-center gap-1">
-                      {!isGenerating &&
-                        ChatAiIcons.map((icon, iconIndex) => {
-                          const Icon = icon.icon;
-                          return (
-                            <ChatBubbleAction
-                              variant="outline"
-                              className="size-5 bg-muted"
-                              key={iconIndex}
-                              icon={<Icon className="size-3" />}
-                              onClick={() =>
-                                handleActionClick(icon.label, index)
-                              }
-                            />
-                          );
-                        })}
-                    </div>
-                  )}
+                {role === 'assistant' && messages.length - 1 === index && (
+                  <div className="mt-1.5 flex items-center gap-1">
+                    {!isGenerating &&
+                      ChatAiIcons.map((icon, iconIndex) => {
+                        const Icon = icon.icon;
+                        return (
+                          <ChatBubbleAction
+                            variant="outline"
+                            className="size-5 bg-muted"
+                            key={iconIndex}
+                            icon={<Icon className="size-3" />}
+                            onClick={() => handleActionClick(icon.label, index)}
+                          />
+                        );
+                      })}
+                  </div>
+                )}
               </ChatBubbleMessage>
             </ChatBubble>
           ))}
@@ -225,7 +229,7 @@ const ChatPage = () => {
         <form
           ref={formRef}
           onSubmit={onSubmit}
-          className="fixed bottom-4 mx-auto w-5/12 rounded-full border bg-background focus-within:ring-1 focus-within:ring-ring"
+          className="fixed bottom-4 mx-auto w-10/12 rounded-full border bg-background focus-within:ring-1 focus-within:ring-ring md:w-7/12 2xl:w-5/12"
         >
           <div className="flex items-center justify-between px-3">
             <ChatInput
