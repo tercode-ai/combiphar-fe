@@ -51,7 +51,8 @@ const ChatPage = () => {
         id: new Date().getTime().toString(),
         role: 'assistant',
         message: result.answer,
-        source_document:
+        isTyping: true,
+        sourceDocument:
           result.source_documents.length > 1
             ? result.source_documents[0]
             : undefined
@@ -83,7 +84,7 @@ const ChatPage = () => {
 
   const handleSubmit = async () => {
     setInput('');
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    // await new Promise((resolve) => setTimeout(resolve, 10));
     mutate({
       question: input
     });
@@ -91,12 +92,6 @@ const ChatPage = () => {
 
   const messagesRef = React.useRef<HTMLDivElement>(null);
   const formRef = React.useRef<HTMLFormElement>(null);
-
-  // React.useEffect(() => {
-  //   if (messagesRef.current) {
-  //     messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
-  //   }
-  // }, [messages]);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -153,48 +148,28 @@ const ChatPage = () => {
   // }, [addChat, data]);
 
   return (
-    <ScrollArea className="flex h-[calc(100vh-7.5rem)] w-full flex-col items-center py-6">
+    <ScrollArea
+      ref={messagesRef}
+      className="flex h-[calc(100vh-7.5rem)] w-full flex-col items-center py-6"
+    >
       <ChatMessageList ref={messagesRef} className="mx-auto max-w-3xl">
         {/* Initial Message */}
-        {messages.length === 0 && (
-          <div className="bg-backgroundp-8 flex h-full max-w-3xl flex-col items-center justify-center gap-2 rounded-lg">
-            <h1 className="text-xl font-bold">
-              Welcome to{' '}
-              <span className="bg-gradient-to-r from-[#532E91] to-[#D54399] bg-clip-text text-transparent">
-                Combiphar
-              </span>{' '}
-              Smart Chat!
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              Feel free to ask me any questions or request help with your tasks.
-            </p>
-          </div>
-        )}
+        {messages.length === 0 && <InitialMessage />}
 
         {/* Messages */}
         {messages &&
-          messages.map(({ message, role }, index) => (
+          messages.map(({ message, role, isTyping, id }, index) => (
             <ChatBubble
               key={index}
               variant={role == 'user' ? 'sent' : 'received'}
             >
               <ChatBubbleAvatar src="" fallback={role == 'user' ? 'D' : '🤖'} />
               <ChatBubbleMessage className="">
-                {message.split('```').map((part: string, index: number) => {
-                  if (index % 2 === 0) {
-                    return (
-                      <Markdown key={index} remarkPlugins={[remarkGfm]}>
-                        {part}
-                      </Markdown>
-                    );
-                  } else {
-                    return (
-                      <pre className="whitespace-pre-wrap pt-2" key={index}>
-                        <CodeDisplayBlock code={part} lang="" />
-                      </pre>
-                    );
-                  }
-                })}
+                {messages.length - 1 === index && isTyping ? (
+                  <ChatWithTypingEffect chatId={id} message={message} />
+                ) : (
+                  <RenderChat message={message} />
+                )}
 
                 {role === 'assistant' && messages.length - 1 === index && (
                   <div className="mt-1.5 flex items-center gap-1">
@@ -255,3 +230,77 @@ const ChatPage = () => {
 };
 
 export default ChatPage;
+
+const InitialMessage = () => (
+  <div className="bg-backgroundp-8 flex h-full max-w-3xl flex-col items-center justify-center gap-2 rounded-lg">
+    <h1 className="text-xl font-bold">
+      Welcome to{' '}
+      <span className="bg-gradient-to-r from-[#532E91] to-[#D54399] bg-clip-text text-transparent">
+        Combiphar
+      </span>{' '}
+      Smart Chat!
+    </h1>
+    <p className="text-sm text-muted-foreground">
+      Feel free to ask me any questions or request help with your tasks.
+    </p>
+  </div>
+);
+
+const ChatWithTypingEffect = ({
+  chatId,
+  message
+}: {
+  chatId: string;
+  message: string;
+}) => {
+  const { setIsTyping } = useChatStore();
+
+  const [typedMessage, setTypedMessage] = React.useState<string>('');
+  const typingSpeed = 10;
+
+  React.useEffect(() => {
+    setTypedMessage('');
+    setIsTyping(chatId, true);
+
+    let currentIndex = 0;
+    const messageLength = message.length;
+
+    const typeLetter = () => {
+      if (currentIndex < messageLength) {
+        setTypedMessage(message.slice(0, currentIndex + 1));
+        currentIndex++;
+        setTimeout(typeLetter, typingSpeed);
+      } else {
+        setIsTyping(chatId, false);
+      }
+    };
+
+    const timeoutId = setTimeout(() => {
+      typeLetter();
+    }, 100);
+
+    return () => {
+      clearTimeout(timeoutId);
+      setIsTyping(chatId, false);
+    };
+  }, [message, chatId, typingSpeed, setIsTyping]);
+
+  return <RenderChat message={typedMessage} />;
+};
+
+const RenderChat = ({ message }: { message: string }) =>
+  message.split('```').map((part: string, index: number) => {
+    if (index % 2 === 0) {
+      return (
+        <Markdown key={index} remarkPlugins={[remarkGfm]}>
+          {part}
+        </Markdown>
+      );
+    } else {
+      return (
+        <pre className="whitespace-pre-wrap pt-2" key={index}>
+          <CodeDisplayBlock code={part} lang="" />
+        </pre>
+      );
+    }
+  });
