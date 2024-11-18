@@ -68,7 +68,7 @@ export const UploadSection = () => {
       </Button>
       <React.Suspense fallback="...">
         <DialogLayout
-          title="Upload Dokumen to Learn"
+          title="Upload Document to Learn"
           // desc="File .pdf .docx .txt, maks 10 MB."
           footer={
             <Button
