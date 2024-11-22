@@ -7,15 +7,7 @@ import {
 import { ChatInput } from '@/components/ui/chat/chat-input';
 import { ChatMessageList } from '@/components/ui/chat/chat-message-list';
 import { Button } from '@/components/ui/button';
-import {
-  ArrowUp,
-  CopyIcon
-  // CornerDownLeft,
-  // Mic,
-  // Paperclip,
-  // RefreshCcw,
-  // Volume2
-} from 'lucide-react';
+import { ArrowUp, CopyIcon } from 'lucide-react';
 import React from 'react';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -23,27 +15,20 @@ import CodeDisplayBlock from '@/components/shared/code-display-block';
 import { useChat } from './queries';
 import { useChatStore } from '@/hooks/use-chatstore';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { usePathname } from '@/routes/hooks';
 
 const ChatAiIcons = [
   {
     icon: CopyIcon,
     label: 'Copy'
   }
-  // {
-  //   icon: RefreshCcw,
-  //   label: 'Refresh'
-  // },
-  // {
-  //   icon: Volume2,
-  //   label: 'Volume'
-  // }
 ];
 
 const ChatPage = () => {
   const [isGenerating, setIsGenerating] = React.useState<boolean>(false);
   const [input, setInput] = React.useState<string>('');
 
-  const { messages, addChat } = useChatStore();
+  const { messages, addChat, resetChat } = useChatStore();
 
   const { mutate, isPending } = useChat({
     onSuccess: ({ result }) => {
@@ -59,6 +44,13 @@ const ChatPage = () => {
       });
     }
   });
+
+  const isChatPage = usePathname() === '/chat';
+  const isChatEmpty = messages.length > 0;
+
+  const showClearChat = React.useMemo(() => {
+    return isChatPage && isChatEmpty;
+  }, [isChatEmpty, isChatPage]);
 
   // const {
   //   messages,
@@ -152,22 +144,12 @@ const ChatPage = () => {
     if (!isPending) setIsGenerating(false);
   }, [isPending]);
 
-  // React.useEffect(() => {
-  //   if (data) {
-  //     addChat({
-  //       id: new Date().getTime().toString(),
-  //       role: 'assistant',
-  //       message: data?.result.answer
-  //     });
-  //   }
-  // }, [addChat, data]);
-
   return (
     <ScrollArea
       ref={scrollAreaRef}
-      className="flex h-[calc(100vh-7.5rem)] w-full flex-col items-center py-6"
+      className="flex h-[calc(100vh-7.5rem)] w-full items-center py-6"
     >
-      <ChatMessageList ref={messagesRef} className="mx-auto max-w-3xl">
+      <ChatMessageList ref={messagesRef} className="mx-auto max-w-[90%]">
         {/* Initial Message */}
         {messages.length === 0 && <InitialMessage />}
 
@@ -216,29 +198,36 @@ const ChatPage = () => {
         )}
       </ChatMessageList>
       <div className="flex justify-center px-4">
-        <form
-          ref={formRef}
-          onSubmit={onSubmit}
-          className="fixed bottom-4 mx-auto w-10/12 rounded-full border bg-background focus-within:ring-1 focus-within:ring-ring md:w-7/12 2xl:w-5/12"
-        >
-          <div className="flex items-center justify-between px-3">
-            <ChatInput
-              value={input}
-              onKeyDown={onKeyDown}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Type message here"
-              className="min-h-12 resize-none rounded-lg border-0 bg-background p-3 shadow-none focus-visible:ring-0"
-            />
-            <Button
-              disabled={!input || isPending}
-              type="submit"
-              size="sm"
-              className="size-8 rounded-full p-0"
-            >
-              <ArrowUp className="size-5" />
+        <div className="fixed bottom-4 flex w-10/12 items-center gap-1 md:w-7/12 2xl:w-5/12">
+          <form
+            ref={formRef}
+            onSubmit={onSubmit}
+            className="w-full rounded-full border bg-background focus-within:ring-1 focus-within:ring-ring"
+          >
+            <div className="flex items-center justify-between px-3">
+              <ChatInput
+                value={input}
+                onKeyDown={onKeyDown}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Type message here"
+                className="min-h-12 resize-none rounded-lg border-0 bg-background p-3 shadow-none focus-visible:ring-0"
+              />
+              <Button
+                disabled={!input || isPending}
+                type="submit"
+                size="sm"
+                className="size-8 rounded-full p-0"
+              >
+                <ArrowUp className="size-5" />
+              </Button>
+            </div>
+          </form>
+          {showClearChat && (
+            <Button className="h-12 rounded-full" onClick={resetChat}>
+              New Chat
             </Button>
-          </div>
-        </form>
+          )}
+        </div>
       </div>
     </ScrollArea>
   );
@@ -247,7 +236,7 @@ const ChatPage = () => {
 export default ChatPage;
 
 const InitialMessage = () => (
-  <div className="bg-backgroundp-8 flex h-full max-w-3xl flex-col items-center justify-center gap-2 rounded-lg">
+  <div className="bg-backgroundp-8 flex h-full flex-col items-center justify-center gap-2 rounded-lg">
     <h1 className="text-xl font-bold">
       Welcome to{' '}
       <span className="bg-gradient-to-r from-[#532E91] to-[#D54399] bg-clip-text text-transparent">

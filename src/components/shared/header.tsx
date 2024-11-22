@@ -1,22 +1,22 @@
 import { MenuIcon } from 'lucide-react';
 import { ModeToggle } from './theme-toggle';
-import { Button } from '../ui/button';
-import { useChatStore } from '@/hooks/use-chatstore';
-import React from 'react';
-import { usePathname } from '@/routes/hooks';
+// import { Button } from '../ui/button';
+// import { useChatStore } from '@/hooks/use-chatstore';
+// import React from 'react';
+// import { usePathname } from '@/routes/hooks';
 
 interface HeaderProps {
   onToggleClick: () => void;
 }
 
 export default function Header({ onToggleClick }: HeaderProps) {
-  const { messages, resetChat } = useChatStore();
-  const isChatPage = usePathname() === '/chat';
-  const isChatEmpty = messages.length > 0;
+  // const { messages, resetChat } = useChatStore();
+  // const isChatPage = usePathname() === '/chat';
+  // const isChatEmpty = messages.length > 0;
 
-  const showClearChat = React.useMemo(() => {
-    return isChatPage && isChatEmpty;
-  }, [isChatEmpty, isChatPage]);
+  // const showClearChat = React.useMemo(() => {
+  //   return isChatPage && isChatEmpty;
+  // }, [isChatEmpty, isChatPage]);
 
   return (
     <div className="relative flex flex-1 items-center justify-between bg-background px-6 py-[1.15rem]">
@@ -28,7 +28,7 @@ export default function Header({ onToggleClick }: HeaderProps) {
           <span className="sr-only">Open sidebar</span>
           <MenuIcon className="h-6 w-6" aria-hidden="true" />
         </button>
-        {showClearChat && (
+        {/* {showClearChat && (
           <Button
             variant="outline"
             className="rounded-md text-sm"
@@ -36,7 +36,7 @@ export default function Header({ onToggleClick }: HeaderProps) {
           >
             Clear Chat
           </Button>
-        )}
+        )} */}
       </div>
       <div className="relative flex items-center gap-3">
         <img src="/combiphar.png" alt="combiphar" className="h-8" />
