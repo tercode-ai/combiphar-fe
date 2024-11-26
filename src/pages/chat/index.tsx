@@ -1,34 +1,28 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   ChatBubble,
-  ChatBubbleAction,
   ChatBubbleAvatar,
   ChatBubbleMessage
 } from '@/components/ui/chat/chat-bubble';
 import { ChatInput } from '@/components/ui/chat/chat-input';
 import { ChatMessageList } from '@/components/ui/chat/chat-message-list';
 import { Button } from '@/components/ui/button';
-import { ArrowUp, CopyIcon } from 'lucide-react';
+import { ArrowUp } from 'lucide-react';
 import React from 'react';
-import Markdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import CodeDisplayBlock from '@/components/shared/code-display-block';
 import { useChat } from './queries';
 import { useChatStore } from '@/hooks/use-chatstore';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { usePathname } from '@/routes/hooks';
-
-const ChatAiIcons = [
-  {
-    icon: CopyIcon,
-    label: 'Copy'
-  }
-];
+import { ChatActions } from './chat-action';
+import { InitialMessage } from './initial';
+import { ChatWithTypingEffect, RenderChat } from './chat-render';
+import { defaultChat } from '@/constants/chat';
 
 const ChatPage = () => {
-  const [isGenerating, setIsGenerating] = React.useState<boolean>(false);
   const [input, setInput] = React.useState<string>('');
+  const [isGenerating, setIsGenerating] = React.useState<boolean>(false);
 
-  const { messages, addChat, resetChat } = useChatStore();
+  const { messages, addChat, resetChat, setChat } = useChatStore();
 
   const { mutate, isPending } = useChat({
     onSuccess: ({ result }) => {
@@ -52,31 +46,8 @@ const ChatPage = () => {
     return isChatPage && isChatEmpty;
   }, [isChatEmpty, isChatPage]);
 
-  // const {
-  //   messages,
-  //   // setMessages,
-  //   input,
-  //   handleInputChange,
-  //   handleSubmit,
-  //   isLoading,
-  //   reload
-  // } = useChat({
-  //   onResponse(response) {
-  //     if (response) {
-  //       console.log(response);
-  //       setIsGenerating(false);
-  //     }
-  //   },
-  //   onError(error) {
-  //     if (error) {
-  //       setIsGenerating(false);
-  //     }
-  //   }
-  // });
-
   const handleSubmit = async () => {
     setInput('');
-    // await new Promise((resolve) => setTimeout(resolve, 10));
     mutate({
       question: input
     });
@@ -95,6 +66,10 @@ const ChatPage = () => {
       scrollContainer.scrollTo({
         top: scrollContainer.scrollHeight
       });
+    }
+
+    if (messages.length === 0) {
+      setChat(defaultChat);
     }
   }, [messages]);
 
@@ -119,27 +94,6 @@ const ChatPage = () => {
     }
   };
 
-  const handleActionClick = async (action: string, messageIndex: number) => {
-    console.log('Action clicked:', action, 'Message index:', messageIndex);
-    if (action === 'Refresh') {
-      setIsGenerating(true);
-      try {
-        // await reload();
-      } catch (error) {
-        console.error('Error reloading:', error);
-      } finally {
-        setIsGenerating(false);
-      }
-    }
-
-    if (action === 'Copy') {
-      const message = messages[messageIndex];
-      if (message && message.role === 'assistant') {
-        navigator.clipboard.writeText(message.message);
-      }
-    }
-  };
-
   React.useEffect(() => {
     if (!isPending) setIsGenerating(false);
   }, [isPending]);
@@ -160,30 +114,26 @@ const ChatPage = () => {
               key={index}
               variant={role == 'user' ? 'sent' : 'received'}
             >
-              <ChatBubbleAvatar src="" fallback={role == 'user' ? 'D' : '🤖'} />
-              <ChatBubbleMessage className="">
+              <div className="h-full pt-4">
+                <ChatBubbleAvatar
+                  className="mb-0"
+                  src=""
+                  fallback={role == 'user' ? 'D' : '🤖'}
+                />
+              </div>
+              <ChatBubbleMessage>
                 {messages.length - 1 === index && isTyping ? (
                   <ChatWithTypingEffect chatId={id} message={message} />
                 ) : (
                   <RenderChat message={message} />
                 )}
 
-                {role === 'assistant' && messages.length - 1 === index && (
-                  <div className="mt-1.5 flex items-center gap-1">
-                    {!isGenerating &&
-                      ChatAiIcons.map((icon, iconIndex) => {
-                        const Icon = icon.icon;
-                        return (
-                          <ChatBubbleAction
-                            variant="outline"
-                            className="size-5 bg-muted"
-                            key={iconIndex}
-                            icon={<Icon className="size-3" />}
-                            onClick={() => handleActionClick(icon.label, index)}
-                          />
-                        );
-                      })}
-                  </div>
+                {role === 'assistant' && (
+                  <ChatActions
+                    index={index}
+                    isGenerating={isGenerating}
+                    setIsGenerating={setIsGenerating}
+                  />
                 )}
               </ChatBubbleMessage>
             </ChatBubble>
@@ -234,77 +184,3 @@ const ChatPage = () => {
 };
 
 export default ChatPage;
-
-const InitialMessage = () => (
-  <div className="bg-backgroundp-8 flex h-full flex-col items-center justify-center gap-2 rounded-lg">
-    <h1 className="text-xl font-bold">
-      Welcome to{' '}
-      <span className="bg-gradient-to-r from-[#532E91] to-[#D54399] bg-clip-text text-transparent">
-        Combiphar
-      </span>{' '}
-      Smart Chat!
-    </h1>
-    <p className="text-sm text-muted-foreground">
-      Feel free to ask me any questions or request help with your tasks.
-    </p>
-  </div>
-);
-
-const ChatWithTypingEffect = ({
-  chatId,
-  message
-}: {
-  chatId: string;
-  message: string;
-}) => {
-  const { setIsTyping } = useChatStore();
-
-  const [typedMessage, setTypedMessage] = React.useState<string>('');
-  const typingSpeed = 10;
-
-  React.useEffect(() => {
-    setTypedMessage('');
-    setIsTyping(chatId, true);
-
-    let currentIndex = 0;
-    const messageLength = message.length;
-
-    const typeLetter = () => {
-      if (currentIndex < messageLength) {
-        setTypedMessage(message.slice(0, currentIndex + 1));
-        currentIndex++;
-        setTimeout(typeLetter, typingSpeed);
-      } else {
-        setIsTyping(chatId, false);
-      }
-    };
-
-    const timeoutId = setTimeout(() => {
-      typeLetter();
-    }, 100);
-
-    return () => {
-      clearTimeout(timeoutId);
-      setIsTyping(chatId, false);
-    };
-  }, [message, chatId, typingSpeed, setIsTyping]);
-
-  return <RenderChat message={typedMessage} />;
-};
-
-const RenderChat = ({ message }: { message: string }) =>
-  message.split('```').map((part: string, index: number) => {
-    if (index % 2 === 0) {
-      return (
-        <Markdown key={index} remarkPlugins={[remarkGfm]}>
-          {part}
-        </Markdown>
-      );
-    } else {
-      return (
-        <pre className="whitespace-pre-wrap pt-2" key={index}>
-          <CodeDisplayBlock code={part} lang="" />
-        </pre>
-      );
-    }
-  });

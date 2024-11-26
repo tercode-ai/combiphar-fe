@@ -45,3 +45,17 @@ export const truncateFileName = (fileName: string, maxLength: number) => {
 
   return `${nameWithoutExtension.slice(0, frontChars)}...${nameWithoutExtension.slice(-backChars)}.${extension}`;
 };
+
+export const getGreeting = (): string => {
+  const currentHour = new Date().getHours();
+
+  if (currentHour >= 5 && currentHour < 12) {
+    return 'Pagi';
+  } else if (currentHour >= 12 && currentHour < 15) {
+    return 'Siang';
+  } else if (currentHour >= 15 && currentHour < 18) {
+    return 'Sore';
+  } else {
+    return 'Malam';
+  }
+};
