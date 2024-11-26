@@ -17,6 +17,8 @@ import { ChatActions } from './chat-action';
 import { InitialMessage } from './initial';
 import { ChatWithTypingEffect, RenderChat } from './chat-render';
 import { defaultChat } from '@/constants/chat';
+import { getUniqSourceDocument } from '@/lib/utils';
+import { RenderSourceDoc } from './source-document';
 
 const ChatPage = () => {
   const [input, setInput] = React.useState<string>('');
@@ -33,7 +35,7 @@ const ChatPage = () => {
         isTyping: true,
         sourceDocument:
           result.source_documents.length > 1
-            ? result.source_documents[0]
+            ? getUniqSourceDocument(result.source_documents)
             : undefined
       });
     }
@@ -109,35 +111,41 @@ const ChatPage = () => {
 
         {/* Messages */}
         {messages &&
-          messages.map(({ message, role, isTyping, id }, index) => (
-            <ChatBubble
-              key={index}
-              variant={role == 'user' ? 'sent' : 'received'}
-            >
-              <div className="h-full pt-4">
-                <ChatBubbleAvatar
-                  className="mb-0"
-                  src=""
-                  fallback={role == 'user' ? 'D' : '🤖'}
-                />
-              </div>
-              <ChatBubbleMessage>
-                {messages.length - 1 === index && isTyping ? (
-                  <ChatWithTypingEffect chatId={id} message={message} />
-                ) : (
-                  <RenderChat message={message} />
-                )}
-
-                {role === 'assistant' && (
-                  <ChatActions
-                    index={index}
-                    isGenerating={isGenerating}
-                    setIsGenerating={setIsGenerating}
+          messages.map(
+            ({ id, message, role, isTyping, sourceDocument }, index) => (
+              <ChatBubble
+                key={index}
+                variant={role == 'user' ? 'sent' : 'received'}
+              >
+                <div className="h-full pt-4">
+                  <ChatBubbleAvatar
+                    className="mb-0"
+                    src=""
+                    fallback={role == 'user' ? 'U' : '🤖'}
                   />
-                )}
-              </ChatBubbleMessage>
-            </ChatBubble>
-          ))}
+                </div>
+                <ChatBubbleMessage>
+                  {messages.length - 1 === index && isTyping ? (
+                    <ChatWithTypingEffect chatId={id} message={message} />
+                  ) : (
+                    <RenderChat message={message} />
+                  )}
+
+                  {sourceDocument && (
+                    <RenderSourceDoc sources={sourceDocument} />
+                  )}
+
+                  {role === 'assistant' && (
+                    <ChatActions
+                      index={index}
+                      isGenerating={isGenerating}
+                      setIsGenerating={setIsGenerating}
+                    />
+                  )}
+                </ChatBubbleMessage>
+              </ChatBubble>
+            )
+          )}
 
         {/* Loading */}
         {isGenerating && (

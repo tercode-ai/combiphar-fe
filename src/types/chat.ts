@@ -16,10 +16,10 @@ export type Message = {
   role: 'user' | 'assistant';
   message: string;
   isTyping?: boolean;
-  sourceDocument?: SourceDocument;
+  sourceDocument?: SourceDocument[];
 };
 
-type SourceDocument = {
+export type SourceDocument = {
   content: string;
   metadata: {
     page: number;

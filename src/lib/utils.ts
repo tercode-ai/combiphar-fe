@@ -1,6 +1,7 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import dayjs from 'dayjs';
+import { SourceDocument } from '@/types/chat';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -58,4 +59,16 @@ export const getGreeting = (): string => {
   } else {
     return 'Malam';
   }
+};
+
+export const getUniqSourceDocument = (documents: SourceDocument[]) => {
+  const seen = new Set<string>();
+  return documents.filter((doc) => {
+    const key = `${doc.metadata.page}-${doc.metadata.source}`;
+    if (seen.has(key)) {
+      return false;
+    }
+    seen.add(key);
+    return true;
+  });
 };
