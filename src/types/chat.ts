@@ -16,6 +16,7 @@ export type Message = {
   role: 'user' | 'assistant';
   message: string;
   isTyping?: boolean;
+  isCopied?: boolean;
   sourceDocument?: SourceDocument[];
 };
 

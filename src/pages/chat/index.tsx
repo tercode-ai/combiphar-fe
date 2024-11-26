@@ -33,6 +33,7 @@ const ChatPage = () => {
         role: 'assistant',
         message: result.answer,
         isTyping: true,
+        isCopied: false,
         sourceDocument:
           result.source_documents.length > 1
             ? getUniqSourceDocument(result.source_documents)
@@ -135,7 +136,7 @@ const ChatPage = () => {
                     <RenderSourceDoc sources={sourceDocument} />
                   )}
 
-                  {role === 'assistant' && (
+                  {role === 'assistant' && index !== 0 && (
                     <ChatActions
                       index={index}
                       isGenerating={isGenerating}

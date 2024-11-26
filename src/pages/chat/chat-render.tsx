@@ -11,14 +11,14 @@ export const ChatWithTypingEffect = ({
   chatId: string;
   message: string;
 }) => {
-  const { setIsTyping } = useChatStore();
+  const { setBoolean } = useChatStore();
 
   const [typedMessage, setTypedMessage] = React.useState<string>('');
   const typingSpeed = 10;
 
   React.useEffect(() => {
     setTypedMessage('');
-    setIsTyping(chatId, true);
+    setBoolean(chatId, 'isTyping', true);
 
     let currentIndex = 0;
     const messageLength = message.length;
@@ -29,7 +29,7 @@ export const ChatWithTypingEffect = ({
         currentIndex++;
         setTimeout(typeLetter, typingSpeed);
       } else {
-        setIsTyping(chatId, false);
+        setBoolean(chatId, 'isTyping', false);
       }
     };
 
@@ -39,9 +39,9 @@ export const ChatWithTypingEffect = ({
 
     return () => {
       clearTimeout(timeoutId);
-      setIsTyping(chatId, false);
+      setBoolean(chatId, 'isTyping', false);
     };
-  }, [message, chatId, typingSpeed, setIsTyping]);
+  }, [message, chatId, typingSpeed, setBoolean]);
 
   return <RenderChat message={typedMessage} />;
 };
