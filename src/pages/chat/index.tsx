@@ -12,7 +12,7 @@ import React from 'react';
 import { useChat } from './queries';
 import { useChatStore } from '@/hooks/use-chatstore';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { usePathname } from '@/routes/hooks';
+import { usePathname, useRouter } from '@/routes/hooks';
 import { ChatActions } from './chat-action';
 import { InitialMessage } from './initial';
 import { ChatWithTypingEffect, RenderChat } from './chat-render';
@@ -20,12 +20,23 @@ import { defaultChat } from '@/constants/chat';
 import { getUniqSourceDocument } from '@/lib/utils';
 import { RenderSourceDoc } from './source-document';
 import { ChatClear } from './chat-clear';
+import { useAuth } from '@/providers/auth-provider';
 
 const ChatPage = () => {
+  const { role } = useAuth();
+  const { back, replace } = useRouter();
+
   const [input, setInput] = React.useState<string>('');
   const [isGenerating, setIsGenerating] = React.useState<boolean>(false);
 
   const { messages, addChat, setChat } = useChatStore();
+
+  React.useEffect(() => {
+    if (!role) return;
+    if (role === 'admin') {
+      replace('/files');
+    }
+  }, [role, back]);
 
   const { mutate, isPending } = useChat({
     onSuccess: ({ result }) => {
