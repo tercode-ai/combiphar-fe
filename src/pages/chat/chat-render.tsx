@@ -1,19 +1,24 @@
 import CodeDisplayBlock from '@/components/shared/code-display-block';
 import { useChatStore } from '@/hooks/use-chatstore';
+import { SourceDocument } from '@/types/chat';
 import React from 'react';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { RenderSourceDoc } from './source-document';
 
 export const ChatWithTypingEffect = ({
   chatId,
-  message
+  message,
+  sourceDocument
 }: {
   chatId: string;
   message: string;
+  sourceDocument?: SourceDocument[];
 }) => {
   const { setBoolean } = useChatStore();
 
   const [typedMessage, setTypedMessage] = React.useState<string>('');
+  const [showDoc, setShowDoc] = React.useState<boolean>(false);
   const typingSpeed = 10;
 
   React.useEffect(() => {
@@ -30,6 +35,7 @@ export const ChatWithTypingEffect = ({
         setTimeout(typeLetter, typingSpeed);
       } else {
         setBoolean(chatId, 'isTyping', false);
+        setShowDoc(true);
       }
     };
 
@@ -43,7 +49,14 @@ export const ChatWithTypingEffect = ({
     };
   }, [message, chatId, typingSpeed, setBoolean]);
 
-  return <RenderChat message={typedMessage} />;
+  return (
+    <>
+      <RenderChat message={typedMessage} />
+      {sourceDocument && showDoc && (
+        <RenderSourceDoc sources={sourceDocument} />
+      )}
+    </>
+  );
 };
 
 export const RenderChat = ({ message }: { message: string }) =>

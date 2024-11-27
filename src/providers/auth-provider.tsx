@@ -3,12 +3,16 @@ import {
   useContext,
   useState,
   ReactNode,
-  useEffect
+  useEffect,
+  useMemo
 } from 'react';
 import Cookies from 'js-cookie';
 import { v4 as uuid } from 'uuid';
 
+type roleType = 'admin' | 'user';
+
 interface AuthContextType {
+  role?: roleType;
   isAuthenticated: boolean;
   login: (token: string) => void;
   logout: () => void;
@@ -32,6 +36,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     () => !!Cookies.get('cm')
   );
 
+  const role = useMemo(() => {
+    const cm = Cookies.get('cm');
+
+    switch (cm) {
+      case 'YWRtaW4tY29tYmlwaGFyOmNvbWJpcGhhcioyMDI0':
+        return 'admin';
+      case 'dXNlci1jb21iaXBoYXI6Y29tYmlwaGFyKjIwMjQ=':
+        return 'user';
+      default:
+        return undefined;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [Cookies.get('cm')]);
+
   const login = (token: string) => {
     Cookies.set('cm', token, { expires: 7 });
     Cookies.set('session_id', uuid());
@@ -49,7 +67,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, login, logout, role }}>
       {children}
     </AuthContext.Provider>
   );

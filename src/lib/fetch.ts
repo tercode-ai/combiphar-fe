@@ -3,12 +3,10 @@ import { toast } from '@/components/ui/use-toast';
 import { capitalizeFirstLetter } from './utils';
 import axios from 'axios';
 import { FileUploadInput } from '@/types/file';
-import { LoginInput, LogoutInput } from '@/types/auth';
+import { LoginInput } from '@/types/auth';
 import { ChatInput } from '@/types/chat';
 import api from './api';
 import Cookies from 'js-cookie';
-
-const session_id = Cookies.get('session_id');
 
 export const apiClient = {
   async login(path: string, input: any) {
@@ -34,9 +32,7 @@ export const apiClient = {
   },
   async get(path: string) {
     try {
-      const response = await api.get(
-        `${import.meta.env.VITE_API_ENDPOINT}${path}`
-      );
+      const response = await api.get(path);
       return response.data;
     } catch (error: any) {
       toast({
@@ -49,14 +45,12 @@ export const apiClient = {
     }
   },
   async post(path: string, input: any) {
+    const session_id = Cookies.get('session_id');
     try {
-      const response = await api.post(
-        `${import.meta.env.VITE_API_ENDPOINT}${path}`,
-        {
-          ...input,
-          session_id
-        }
-      );
+      const response = await api.post(path, {
+        ...input,
+        session_id
+      });
       return response.data;
     } catch (error: any) {
       toast({
@@ -72,15 +66,11 @@ export const apiClient = {
     const formData = new FormData();
     formData.append('file', file);
     try {
-      const response = await api.post(
-        `${import.meta.env.VITE_API_ENDPOINT}${path}`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
+      const response = await api.post(path, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
         }
-      );
+      });
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -93,7 +83,7 @@ export const apiClient = {
 
 export const auth = {
   login: (key: LoginInput) => apiClient.login('/login', key),
-  logout: (payload: LogoutInput) => apiClient.post('/logout', payload)
+  logout: () => apiClient.post('/logout', {})
 };
 
 export const file = {

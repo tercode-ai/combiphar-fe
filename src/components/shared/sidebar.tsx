@@ -1,19 +1,19 @@
 'use client';
 import DashboardNav from '@/components/shared/dashboard-nav';
-import { adminItems } from '@/constants/data';
+import { adminItems, userItems } from '@/constants/data';
 import { useSidebar } from '@/hooks/use-sidebar';
 import { cn } from '@/lib/utils';
-import { ChevronsLeft, LogOut } from 'lucide-react';
+import { ChevronsLeft } from 'lucide-react';
 import { useState } from 'react';
-import { Button } from '../ui/button';
 import { useAuth } from '@/providers/auth-provider';
+import { LogoutButton } from '@/pages/auth/logout';
 
 type SidebarProps = {
   className?: string;
 };
 
 export default function Sidebar({ className }: SidebarProps) {
-  const { logout } = useAuth();
+  const { role } = useAuth();
   const { isMinimized, toggle } = useSidebar();
   const [status, setStatus] = useState(false);
 
@@ -22,6 +22,9 @@ export default function Sidebar({ className }: SidebarProps) {
     toggle();
     setTimeout(() => setStatus(false), 500);
   };
+
+  const navItems = role === 'admin' ? adminItems : userItems;
+
   return (
     <nav
       className={cn(
@@ -53,17 +56,11 @@ export default function Sidebar({ className }: SidebarProps) {
       <div className="space-y-4 py-2">
         <div className="px-2 py-2">
           <div className="mt-3 space-y-1">
-            <DashboardNav items={adminItems} />
+            <DashboardNav items={navItems} />
           </div>
         </div>
       </div>
-      <Button
-        onClick={logout}
-        variant="ghost"
-        className="my-4 ml-1 mt-auto flex justify-start gap-2 text-sm tracking-tight hover:bg-white/10 hover:text-white"
-      >
-        <LogOut className="size-5" /> {isMinimized ? '' : 'Log Out'}
-      </Button>
+      <LogoutButton isMinimized={isMinimized} />
     </nav>
   );
 }

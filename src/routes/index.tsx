@@ -54,11 +54,7 @@ export default function AppRouter() {
     },
     {
       path: '/thankyou',
-      element: (
-        <ProtectedRoute>
-          <ThankyouPage />
-        </ProtectedRoute>
-      ),
+      element: <ThankyouPage />,
       index: true
     },
     {

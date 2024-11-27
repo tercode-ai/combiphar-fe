@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from 'react';
-import { useAuthMutation } from './queries';
+import { useLogin } from './queries';
 import { useSearchParams } from 'react-router-dom';
 import { useRouter } from '@/routes/hooks';
 import { toast } from '@/components/ui/use-toast';
@@ -14,7 +14,7 @@ export default function SignInPage() {
 
   const key = searchParams.get('key') ?? '';
 
-  const { mutate } = useAuthMutation({
+  const { mutate } = useLogin({
     onSuccess: ({ message }) => {
       if (message === 'success') {
         login(key);

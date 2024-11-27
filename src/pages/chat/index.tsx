@@ -128,13 +128,18 @@ const ChatPage = () => {
                 </div>
                 <ChatBubbleMessage>
                   {messages.length - 1 === index && isTyping ? (
-                    <ChatWithTypingEffect chatId={id} message={message} />
+                    <ChatWithTypingEffect
+                      chatId={id}
+                      message={message}
+                      sourceDocument={sourceDocument}
+                    />
                   ) : (
-                    <RenderChat message={message} />
-                  )}
-
-                  {sourceDocument && (
-                    <RenderSourceDoc sources={sourceDocument} />
+                    <>
+                      <RenderChat message={message} />
+                      {sourceDocument && (
+                        <RenderSourceDoc sources={sourceDocument} />
+                      )}
+                    </>
                   )}
 
                   {role === 'assistant' && index !== 0 && (
