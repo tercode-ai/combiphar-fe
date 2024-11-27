@@ -19,12 +19,13 @@ import { ChatWithTypingEffect, RenderChat } from './chat-render';
 import { defaultChat } from '@/constants/chat';
 import { getUniqSourceDocument } from '@/lib/utils';
 import { RenderSourceDoc } from './source-document';
+import { ChatClear } from './chat-clear';
 
 const ChatPage = () => {
   const [input, setInput] = React.useState<string>('');
   const [isGenerating, setIsGenerating] = React.useState<boolean>(false);
 
-  const { messages, addChat, resetChat, setChat } = useChatStore();
+  const { messages, addChat, setChat } = useChatStore();
 
   const { mutate, isPending } = useChat({
     onSuccess: ({ result }) => {
@@ -181,11 +182,7 @@ const ChatPage = () => {
               </Button>
             </div>
           </form>
-          {showClearChat && (
-            <Button className="h-12 rounded-full" onClick={resetChat}>
-              New Chat
-            </Button>
-          )}
+          {showClearChat && <ChatClear />}
         </div>
       </div>
     </ScrollArea>

@@ -10,6 +10,8 @@ const MainLayout = lazy(() => import('@/components/layout/main-layout'));
 
 const ChatPage = lazy(() => import('@/pages/chat'));
 const UploadFilePage = lazy(() => import('@/pages/upload-file'));
+
+const ThankyouPage = lazy(() => import('@/pages/thankyou'));
 // ----------------------------------------------------------------------
 
 export default function AppRouter() {
@@ -47,6 +49,15 @@ export default function AppRouter() {
         <PublicRoute>
           <SignInPage />
         </PublicRoute>
+      ),
+      index: true
+    },
+    {
+      path: '/thankyou',
+      element: (
+        <ProtectedRoute>
+          <ThankyouPage />
+        </ProtectedRoute>
       ),
       index: true
     },

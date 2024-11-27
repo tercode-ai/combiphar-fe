@@ -1,6 +1,6 @@
 'use client';
 import DashboardNav from '@/components/shared/dashboard-nav';
-import { navItems } from '@/constants/data';
+import { adminItems } from '@/constants/data';
 import { useSidebar } from '@/hooks/use-sidebar';
 import { cn } from '@/lib/utils';
 import { ChevronsLeft, LogOut } from 'lucide-react';
@@ -53,7 +53,7 @@ export default function Sidebar({ className }: SidebarProps) {
       <div className="space-y-4 py-2">
         <div className="px-2 py-2">
           <div className="mt-3 space-y-1">
-            <DashboardNav items={navItems} />
+            <DashboardNav items={adminItems} />
           </div>
         </div>
       </div>

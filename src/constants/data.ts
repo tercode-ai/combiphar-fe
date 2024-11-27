@@ -1,6 +1,15 @@
 import { NavItem } from '@/types';
 
-export const navItems: NavItem[] = [
+export const userItems: NavItem[] = [
+  {
+    title: 'Chat',
+    href: '/chat',
+    icon: 'chat',
+    label: 'Chat'
+  }
+];
+
+export const adminItems: NavItem[] = [
   {
     title: 'Chat',
     href: '/chat',

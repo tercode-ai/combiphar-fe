@@ -1,29 +1,42 @@
-import UserAuthForm from './components/user-auth-form';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React from 'react';
+import { useAuthMutation } from './queries';
+import { useSearchParams } from 'react-router-dom';
+import { useRouter } from '@/routes/hooks';
+import { toast } from '@/components/ui/use-toast';
+import { useAuth } from '@/providers/auth-provider';
 
 export default function SignInPage() {
-  return (
-    <div className="relative grid h-screen flex-col justify-center bg-gradient-to-b from-primary/95 to-purple-950 md:grid md:items-center lg:max-w-none lg:px-0">
-      <div className="flex items-center rounded-xl bg-background p-8 shadow-lg">
-        <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
-          <div className="flex flex-col space-y-2 text-center">
-            <div className="flex justify-center pb-6">
-              <img src="/combiphar.png" alt="combiphar" className="h-10" />
-              {/* <img
-                src="/combiphar_white.png"
-                alt="combiphar"
-                className="hidden h-10 dark:block"
-              /> */}
-            </div>
-            <h1 className="text-2xl font-semibold tracking-tight">
-              Selamat Datang
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              Masukkan email dan password anda
-            </p>
-          </div>
-          <UserAuthForm />
-        </div>
-      </div>
-    </div>
-  );
+  const { push } = useRouter();
+  const { login } = useAuth();
+
+  const [searchParams] = useSearchParams();
+
+  const key = searchParams.get('key') ?? '';
+
+  const { mutate } = useAuthMutation({
+    onSuccess: ({ message }) => {
+      if (message === 'success') {
+        login(key);
+        push('/chat');
+      } else {
+        toast({
+          variant: 'destructive',
+          title: 'Invalid credential'
+        });
+      }
+    }
+  });
+
+  React.useEffect(() => {
+    if (key === '') {
+      push('/404');
+      return;
+    }
+    mutate({
+      key
+    });
+  }, []);
+
+  return null;
 }

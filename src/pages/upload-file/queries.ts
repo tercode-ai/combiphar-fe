@@ -1,4 +1,4 @@
-import { file } from '@/lib/api';
+import { file } from '@/lib/fetch';
 import {
   FileListResponse,
   FileUploadInput,

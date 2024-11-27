@@ -1,6 +1,6 @@
 import DashboardNav from '@/components/shared/dashboard-nav';
 import { Sheet, SheetContent } from '@/components/ui/sheet';
-import { navItems } from '@/constants/data';
+import { adminItems } from '@/constants/data';
 import { Dispatch, SetStateAction } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '../ui/button';
@@ -30,7 +30,7 @@ export default function MobileSidebar({
               Combiphar POC LLM
             </Link>
             <div className="space-y-1 px-2">
-              <DashboardNav items={navItems} setOpen={setSidebarOpen} />
+              <DashboardNav items={adminItems} setOpen={setSidebarOpen} />
             </div>
           </div>
         </div>

@@ -6,6 +6,7 @@ import {
   useEffect
 } from 'react';
 import Cookies from 'js-cookie';
+import { v4 as uuid } from 'uuid';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -28,21 +29,23 @@ interface AuthProviderProps {
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
-    () => !!Cookies.get('authToken')
+    () => !!Cookies.get('cm')
   );
 
   const login = (token: string) => {
-    Cookies.set('authToken', token, { expires: 1 });
+    Cookies.set('cm', token, { expires: 7 });
+    Cookies.set('session_id', uuid());
     setIsAuthenticated(true);
   };
 
   const logout = () => {
-    Cookies.remove('authToken');
+    Cookies.remove('cm');
+    Cookies.remove('session_id');
     setIsAuthenticated(false);
   };
 
   useEffect(() => {
-    setIsAuthenticated(!!Cookies.get('authToken'));
+    setIsAuthenticated(!!Cookies.get('cm'));
   }, []);
 
   return (
