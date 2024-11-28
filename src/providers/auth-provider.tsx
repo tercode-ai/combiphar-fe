@@ -8,6 +8,7 @@ import {
 } from 'react';
 import Cookies from 'js-cookie';
 import { v4 as uuid } from 'uuid';
+// import { decrypt } from '@/lib/crypt';
 
 type roleType = 'admin' | 'user';
 
@@ -39,7 +40,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const role = useMemo(() => {
     const cm = Cookies.get('cm');
 
-    switch (cm) {
+    switch (String(cm)) {
       case 'YWRtaW4tY29tYmlwaGFyOmNvbWJpcGhhcioyMDI0':
         return 'admin';
       case 'dXNlci1jb21iaXBoYXI6Y29tYmlwaGFyKjIwMjQ=':

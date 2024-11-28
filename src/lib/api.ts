@@ -9,9 +9,9 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const token = Cookies.get('cm');
-  if (token) {
-    config.headers.Authorization = `Basic ${token}`;
+  const key = Cookies.get('cm') ?? '';
+  if (key) {
+    config.headers.Authorization = `Basic ${key}`;
   }
   return config;
 });

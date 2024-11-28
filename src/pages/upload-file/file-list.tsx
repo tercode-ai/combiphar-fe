@@ -3,10 +3,17 @@ import { useGetFiles } from './queries';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { LoaderCircle } from '@/components/shared/loader';
+import { excludeFileByName } from '@/lib/utils';
+import { encrypt } from '@/lib/crypt';
 dayjs.extend(utc);
 
 export const FileList = () => {
-  const { data: files, isLoading } = useGetFiles();
+  const { data, isLoading } = useGetFiles();
+
+  const files = excludeFileByName(data);
+
+  console.log(encrypt('YWRtaW4tY29tYmlwaGFyOmNvbWJpcGhhcioyMDI0'));
+  console.log(encrypt('dXNlci1jb21iaXBoYXI6Y29tYmlwaGFyKjIwMjQ='));
 
   if (isLoading) return <LoaderCircle />;
 
