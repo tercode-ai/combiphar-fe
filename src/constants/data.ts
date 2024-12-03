@@ -11,6 +11,12 @@ export const userItems: NavItem[] = [
 
 export const adminItems: NavItem[] = [
   {
+    title: 'Chat',
+    href: '/chat',
+    icon: 'chat',
+    label: 'Chat'
+  },
+  {
     title: 'Files',
     href: '/files',
     icon: 'post',
