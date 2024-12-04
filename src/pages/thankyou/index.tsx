@@ -1,7 +1,7 @@
 const Page = () => {
   return (
     <div className="relative grid h-screen flex-col justify-center md:grid md:items-center lg:max-w-none lg:px-0">
-      <div className="flex flex-col items-center rounded-xl bg-background p-8 shadow-lg">
+      <div className="flex flex-col items-center rounded-xl bg-background p-8">
         <div className="flex justify-center pb-6">
           <img src="/combiphar.png" alt="combiphar" className="h-12" />
         </div>

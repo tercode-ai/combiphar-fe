@@ -8,15 +8,12 @@ export const LogoutButton = ({ isMinimized }: { isMinimized: boolean }) => {
   const { replace } = useRouter();
 
   const { logout } = useAuth();
-  const { mutate } = useLogout({
-    onSuccess: () => {
-      logout();
-      replace('/thankyou');
-    }
-  });
+  const { mutate } = useLogout();
 
   const handleLogout = () => {
     mutate();
+    logout();
+    replace('/thankyou');
   };
 
   return (
