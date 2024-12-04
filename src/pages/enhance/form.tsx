@@ -28,9 +28,10 @@ import { toast } from '@/components/ui/use-toast';
 import { refetchQueries } from '@/lib/refetcher';
 import React from 'react';
 import { useEnhanceState } from './hook/table';
+import { Loader2 } from 'lucide-react';
 
 const formSchema = z.object({
-  id: z.string(),
+  id: z.string().optional(),
   type: z.string().min(1, {
     message: 'Required'
   }),
@@ -42,6 +43,8 @@ const formSchema = z.object({
 export const FormSection = () => {
   const { setOpen } = useDialog();
   const { actionType, data } = useEnhanceState();
+
+  const [isSubmitting, setIsSubmitting] = React.useState<boolean>(false);
 
   const { mutateAsync } = useCreateEnhance({
     onSuccess: () => {
@@ -72,23 +75,21 @@ export const FormSection = () => {
     }
   });
 
-  const {
-    formState: { isSubmitting }
-  } = form;
-
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    setIsSubmitting(true);
     if (actionType === 'create') {
-      mutateAsync({
+      await mutateAsync({
         type: data.type as Type,
         value: data.value
       });
     } else if (actionType === 'edit') {
-      mutateAsyncUpdate({
-        id: data.id,
+      await mutateAsyncUpdate({
+        id: String(data.id),
         type: data.type as Type,
         value: data.value
       });
     }
+    setIsSubmitting(false);
   };
 
   React.useEffect(() => {
@@ -151,8 +152,8 @@ export const FormSection = () => {
             )}
           />
         </section>
-        <Button disabled={isSubmitting} type="submit">
-          Submit
+        <Button disabled={isSubmitting} type="submit" className="w-full">
+          {isSubmitting ? <Loader2 className="animate-spin" /> : 'Submit'}
         </Button>
       </form>
     </Form>

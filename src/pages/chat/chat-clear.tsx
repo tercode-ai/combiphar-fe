@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
 
 export const ChatClear = () => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const { mutateAsync } = useClearChat({
     onSuccess: () => {
       resetChat();
@@ -15,18 +15,18 @@ export const ChatClear = () => {
   const { resetChat } = useChatStore();
 
   const handleReset = async () => {
-    setIsLoading(true);
+    setIsSubmitting(true);
     await mutateAsync();
-    setIsLoading(false);
+    setIsSubmitting(false);
   };
 
   return (
     <Button
       className="h-12 w-24 rounded-full"
       onClick={handleReset}
-      disabled={isLoading}
+      disabled={isSubmitting}
     >
-      {isLoading ? <Loader2 className="animate-spin" /> : 'New Chat'}
+      {isSubmitting ? <Loader2 className="animate-spin" /> : 'New Chat'}
     </Button>
   );
 };

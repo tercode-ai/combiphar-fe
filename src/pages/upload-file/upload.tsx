@@ -8,6 +8,7 @@ import React from 'react';
 import { useFileMutation } from './queries';
 import { refetchQueries } from '@/lib/refetcher';
 import { Upload } from 'lucide-react';
+import { toast } from '@/components/ui/use-toast';
 
 const DialogLayout = React.lazy(
   () => import('@/components/layout/dialog-layout')
@@ -52,6 +53,9 @@ export const UploadSection = () => {
     if (successCount > 0 && successCount === files.length) {
       setOpen(false);
       setFiles([]);
+      toast({
+        title: 'All Files Uploaded!'
+      });
     }
   }, [files]);
 

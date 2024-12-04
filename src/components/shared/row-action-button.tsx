@@ -17,7 +17,6 @@ export const ActionButtons = <T,>({ data, onAction }: Props<T>) => {
     <div className="flex gap-2">
       <Button
         variant="outline"
-        className="hover:text-warning"
         size="icon"
         onClick={() => {
           setOpen(true);
@@ -28,7 +27,6 @@ export const ActionButtons = <T,>({ data, onAction }: Props<T>) => {
       </Button>
       <Button
         variant="outline"
-        className="hover:text-destructive"
         size="icon"
         onClick={() => {
           setOpen(true);

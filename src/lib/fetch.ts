@@ -52,53 +52,21 @@ const fetcher = async <T = any>({
   }
 };
 
-export const apiClient = {
-  async get(path: string) {
-    try {
-      const response = await api.get(path);
-      return response.data;
-    } catch (error: any) {
-      toast({
-        title: capitalizeFirstLetter(
-          error.response?.data?.error || 'An error occurred'
-        )
-      });
-      return error;
-    }
-  },
-  async post(path: string, input: any) {
-    const session_id = Cookies.get('session_id');
-    try {
-      const response = await api.post(path, {
-        ...input,
-        session_id
-      });
-      return response.data;
-    } catch (error: any) {
-      toast({
-        title: capitalizeFirstLetter(
-          error.response?.data?.error || 'An error occurred'
-        )
-      });
-      return error;
-    }
-  },
-  async postFile(path: string, { file }: FileUploadInput) {
-    const formData = new FormData();
-    formData.append('file', file);
-    try {
-      const response = await api.post(path, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
-      return response.data;
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        throw new Error(error.response?.data?.message || 'File upload failed');
+const fileFetcher = async (path: string, { file }: FileUploadInput) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  try {
+    const response = await api.post(path, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
       }
-      throw error;
+    });
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.message || 'File upload failed');
     }
+    throw error;
   }
 };
 
@@ -123,19 +91,7 @@ export const file = {
     fetcher({
       url: '/docs'
     }),
-  upload: ({ file }: FileUploadInput) => {
-    const formData = new FormData();
-    formData.append('file', file);
-
-    return fetcher({
-      url: '/upload',
-      method: 'POST',
-      data: formData,
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    });
-  }
+  upload: ({ file }: FileUploadInput) => fileFetcher('/upload', { file })
 };
 
 export const chat = {
