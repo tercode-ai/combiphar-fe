@@ -25,7 +25,7 @@ export const adminItems: NavItem[] = [
   {
     title: 'Enhance',
     href: '/enhance',
-    icon: 'post',
+    icon: 'wand',
     label: 'Enhance'
   }
 ];

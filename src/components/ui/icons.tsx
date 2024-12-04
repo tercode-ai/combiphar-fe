@@ -25,10 +25,11 @@ import {
   Settings,
   SunMedium,
   Trash,
-  Twitter,
+  // Twitter,
   User,
   User2Icon,
   UserX2Icon,
+  WandSparkles,
   X
 } from 'lucide-react';
 
@@ -79,6 +80,7 @@ export const Icons = {
       ></path>
     </svg>
   ),
-  twitter: Twitter,
-  check: Check
+  // twitter: Twitter,
+  check: Check,
+  wand: WandSparkles
 };

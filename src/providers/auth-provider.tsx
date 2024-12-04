@@ -59,6 +59,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const logout = () => {
     Cookies.remove('cm');
     Cookies.remove('session_id');
+    localStorage.removeItem('combiphar-chats');
     setIsAuthenticated(false);
   };
 

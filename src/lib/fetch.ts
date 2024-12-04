@@ -45,7 +45,8 @@ const fetcher = async <T = any>({
     toast({
       title: capitalizeFirstLetter(
         error.response?.data?.error || 'An error occurred'
-      )
+      ),
+      duration: 5000
     });
     throw error;
   }

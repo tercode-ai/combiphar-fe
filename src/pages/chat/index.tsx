@@ -120,11 +120,13 @@ const ChatPage = () => {
                 variant={role == 'user' ? 'sent' : 'received'}
               >
                 <div className="h-full pt-4">
-                  <ChatBubbleAvatar
-                    className="mb-0"
-                    src=""
-                    fallback={role == 'user' ? 'U' : '🤖'}
-                  />
+                  {role === 'assistant' && (
+                    <ChatBubbleAvatar
+                      className="mb-0"
+                      src="/vita.jpg"
+                      fallback={'🤖'}
+                    />
+                  )}
                 </div>
                 <ChatBubbleMessage>
                   {messages.length - 1 === index && isTyping ? (
