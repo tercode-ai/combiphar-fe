@@ -118,8 +118,9 @@ const ChatPage = () => {
               <ChatBubble
                 key={index}
                 variant={role == 'user' ? 'sent' : 'received'}
+                className=""
               >
-                <div className="h-full pt-4">
+                <div className="pb-4">
                   {role === 'assistant' && (
                     <ChatBubbleAvatar
                       className="mb-0"
