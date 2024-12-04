@@ -7,6 +7,11 @@ import { LoginInput } from '@/types/auth';
 import { ChatInput } from '@/types/chat';
 import api from './api';
 import Cookies from 'js-cookie';
+import {
+  CreateEnhanceInput,
+  DeleteEnhanceInput,
+  UpdateEnhanceInput
+} from '@/types/enhance';
 
 interface FetcherParams {
   url: string;
@@ -131,11 +136,11 @@ export const file = {
 };
 
 export const chat = {
-  ask: (payload: ChatInput) =>
+  ask: (input: ChatInput) =>
     fetcher({
       url: '/ask',
       method: 'POST',
-      data: payload,
+      data: input,
       withSessionId: true
     }),
   clear: () =>
@@ -143,5 +148,30 @@ export const chat = {
       url: '/clear-chat',
       method: 'POST',
       withSessionId: true
+    })
+};
+
+export const enhance = {
+  list: () =>
+    fetcher({
+      url: '/enhance'
+    }),
+  create: (input: CreateEnhanceInput) =>
+    fetcher({
+      url: '/enhance-create',
+      method: 'POST',
+      data: input
+    }),
+  update: (input: UpdateEnhanceInput) =>
+    fetcher({
+      url: '/enhance-update',
+      method: 'POST',
+      data: input
+    }),
+  delete: (input: DeleteEnhanceInput) =>
+    fetcher({
+      url: '/enhance-delete',
+      method: 'POST',
+      data: input
     })
 };

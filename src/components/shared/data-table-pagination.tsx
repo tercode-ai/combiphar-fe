@@ -19,12 +19,11 @@ import { PaginationInput } from '@/types';
 interface DataTablePaginationProps<TData> {
   table: Table<TData>;
   pagination?: PaginationInput;
-  isThousand?: boolean;
 }
 
 export function DataTablePagination<TData>({
-  table,
-  pagination
+  table
+  // pagination
 }: DataTablePaginationProps<TData>) {
   const pageIndex = table.getState().pagination.pageIndex;
   const canPreviousPage = table.getCanPreviousPage();
@@ -42,8 +41,8 @@ export function DataTablePagination<TData>({
             onValueChange={(value: string) => {
               const newPageSize = Number(value);
               table.setPageSize(newPageSize);
-              pagination && pagination.onPageChange(0);
-              pagination && pagination.onPageSizeChange(newPageSize);
+              // pagination && pagination.onPageChange(0);
+              // pagination && pagination.onPageSizeChange(newPageSize);
             }}
           >
             <SelectTrigger className="h-8 w-[70px]">
@@ -69,7 +68,7 @@ export function DataTablePagination<TData>({
             className="hidden size-8 p-0 lg:flex"
             onClick={() => {
               table.setPageIndex(0);
-              pagination && pagination.onPageChange(0);
+              // pagination && pagination.onPageChange(0);
             }}
             disabled={!canPreviousPage}
           >
@@ -81,7 +80,7 @@ export function DataTablePagination<TData>({
             className="size-8 p-0"
             onClick={() => {
               table.previousPage();
-              pagination && pagination.onPageChange(pageIndex - 1);
+              // pagination && pagination.onPageChange(pageIndex - 1);
             }}
             disabled={!canPreviousPage}
           >
@@ -93,7 +92,7 @@ export function DataTablePagination<TData>({
             className="size-8 p-0"
             onClick={() => {
               table.nextPage();
-              pagination && pagination.onPageChange(pageIndex + 1);
+              // pagination && pagination.onPageChange(pageIndex + 1);
             }}
             disabled={!canNextPage}
           >
@@ -106,7 +105,7 @@ export function DataTablePagination<TData>({
             onClick={() => {
               const lastPage = table.getPageCount() - 1;
               table.setPageIndex(lastPage);
-              pagination && pagination.onPageChange(lastPage);
+              // pagination && pagination.onPageChange(lastPage);
             }}
             disabled={!canNextPage}
           >

@@ -10,6 +10,7 @@ const MainLayout = lazy(() => import('@/components/layout/main-layout'));
 
 const ChatPage = lazy(() => import('@/pages/chat'));
 const UploadFilePage = lazy(() => import('@/pages/upload-file'));
+const EnhancePage = lazy(() => import('@/pages/enhance'));
 
 const ThankyouPage = lazy(() => import('@/pages/thankyou'));
 // ----------------------------------------------------------------------
@@ -37,6 +38,10 @@ export default function AppRouter() {
         {
           path: '/files',
           element: <UploadFilePage />
+        },
+        {
+          path: '/enhance',
+          element: <EnhancePage />
         }
       ]
     }

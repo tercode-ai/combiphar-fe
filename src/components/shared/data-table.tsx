@@ -90,7 +90,6 @@ export function DataTable<TData, TValue>({
 
   return (
     <>
-      {/* <ScrollArea className="h-[calc(80vh-220px)] rounded-md border md:h-[calc(80dvh-80px)]"> */}
       <ScrollArea className="rounded-md border">
         <Table className="relative">
           <TableHeader>
