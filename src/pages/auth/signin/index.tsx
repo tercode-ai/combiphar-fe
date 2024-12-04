@@ -21,7 +21,6 @@ export default function SignInPage() {
         push('/chat');
       } else {
         toast({
-          variant: 'destructive',
           title: 'Invalid credential'
         });
       }

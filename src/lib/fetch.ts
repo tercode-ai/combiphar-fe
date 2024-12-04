@@ -42,7 +42,11 @@ const fetcher = async <T = any>({
     });
     return response.data;
   } catch (error: any) {
-    console.error('Failed to fetch:', error);
+    toast({
+      title: capitalizeFirstLetter(
+        error.response?.data?.error || 'An error occurred'
+      )
+    });
     throw error;
   }
 };
@@ -54,8 +58,7 @@ export const apiClient = {
       return response.data;
     } catch (error: any) {
       toast({
-        variant: 'destructive',
-        description: capitalizeFirstLetter(
+        title: capitalizeFirstLetter(
           error.response?.data?.error || 'An error occurred'
         )
       });
@@ -72,8 +75,7 @@ export const apiClient = {
       return response.data;
     } catch (error: any) {
       toast({
-        variant: 'destructive',
-        description: capitalizeFirstLetter(
+        title: capitalizeFirstLetter(
           error.response?.data?.error || 'An error occurred'
         )
       });

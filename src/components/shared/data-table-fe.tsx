@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/table';
 import { PaginationInput } from '@/types';
 import { DataTablePagination } from './data-table-pagination';
+import { LoaderCircle } from './loader';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -66,7 +67,7 @@ export function FEDataTable<TData, TValue>({
     }
   });
 
-  if (loading) return 'Loading...';
+  if (loading) return <LoaderCircle />;
 
   return (
     <div>
