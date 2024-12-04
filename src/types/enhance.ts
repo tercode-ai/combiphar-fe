@@ -19,6 +19,10 @@ export type ListEnhanceResponse = {
   data: string[];
 };
 
+export type EnhanceMutationResponse = {
+  message: string;
+};
+
 export type Enhance = {
   id: string;
   type: EnhanceTypes;

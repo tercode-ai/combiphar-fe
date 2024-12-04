@@ -131,3 +131,5 @@ export type Employee = {
   job: string;
   profile_picture?: string | null; // Profile picture can be a string (URL) or null (if no picture)
 };
+
+export const EnhanceTypes = ['prefix', 'postfix'];

@@ -1,6 +1,7 @@
 // import { useSearchParams } from 'react-router-dom';
 import EnhanceTable from './table';
 import { TableAction } from './action';
+import { Dialog } from './dialog';
 
 export default function TemuanPage() {
   return (
@@ -9,6 +10,7 @@ export default function TemuanPage() {
         <TableAction />
         <EnhanceTable />
       </div>
+      <Dialog />
     </div>
   );
 }

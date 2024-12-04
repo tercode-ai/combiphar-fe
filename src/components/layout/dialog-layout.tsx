@@ -7,11 +7,9 @@ import {
   DialogContent,
   DialogDescription,
   DialogFooter,
-  // DialogFooter,
   DialogHeader,
   DialogTitle
 } from '@/components/ui/dialog';
-import { cn } from '@/lib/utils';
 import { useDialog } from '@/hooks/use-dialog';
 
 interface DialogProps {
@@ -45,7 +43,7 @@ export default function BaseDialog({
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{desc}</DialogDescription>
         </DialogHeader>
-        <div className={cn(!footer && 'pb-6')}>{children}</div>
+        <div>{children}</div>
         {footer && (
           <DialogFooter className="sm:justify-start">{footer}</DialogFooter>
         )}
