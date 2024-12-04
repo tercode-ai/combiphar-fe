@@ -21,7 +21,7 @@ export default function Header({ onToggleClick }: HeaderProps) {
         </button>
         {showEnhance && (
           <div>
-            <div className="text-xl font-bold capitalize tracking-tight text-primary">
+            <div className="text-xl font-bold capitalize tracking-tight text-primary dark:text-primary-foreground">
               Chat Enhancement
             </div>
             <div className="text-xs uppercase leading-4 tracking-widest text-[#585858]">

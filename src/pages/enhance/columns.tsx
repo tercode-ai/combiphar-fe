@@ -1,10 +1,24 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { Enhance } from '@/types/enhance';
 import { formatDate } from '@/lib/utils';
+import { ActionButtons } from '@/components/shared/row-action-button';
+import { useEnhanceState } from './hook/table';
+import { ActionType } from '@/types';
 
 const typeLabel = {
   prefix: 'Prefix',
   postfix: 'Postfix'
+};
+
+// eslint-disable-next-line react-refresh/only-export-components
+const ActionSection = ({ data }: { data: Enhance }) => {
+  const { set } = useEnhanceState();
+
+  const handleAction = (actionType: ActionType, data: Enhance) => {
+    set({ actionType, data });
+  };
+
+  return <ActionButtons data={data} onAction={handleAction} />;
 };
 
 export const columns: ColumnDef<Enhance>[] = [
@@ -29,6 +43,8 @@ export const columns: ColumnDef<Enhance>[] = [
   },
   {
     id: 'action',
-    cell: () => 'action'
+    cell: ({ row }) => {
+      return <ActionSection data={row.original} />;
+    }
   }
 ];

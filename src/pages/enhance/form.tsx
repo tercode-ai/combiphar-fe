@@ -21,13 +21,16 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { Textarea } from '@/components/ui/textarea';
-import { useCreateEnhance } from './queries';
+import { useCreateEnhance, useEditEnhance } from './queries';
 import { EnhanceTypes as Type } from '@/types/enhance';
 import { useDialog } from '@/hooks/use-dialog';
 import { toast } from '@/components/ui/use-toast';
 import { refetchQueries } from '@/lib/refetcher';
+import React from 'react';
+import { useEnhanceState } from './hook/table';
 
 const formSchema = z.object({
+  id: z.string(),
   type: z.string().min(1, {
     message: 'Required'
   }),
@@ -38,6 +41,7 @@ const formSchema = z.object({
 
 export const FormSection = () => {
   const { setOpen } = useDialog();
+  const { actionType, data } = useEnhanceState();
 
   const { mutateAsync } = useCreateEnhance({
     onSuccess: () => {
@@ -46,6 +50,17 @@ export const FormSection = () => {
       toast({
         variant: 'default',
         title: 'Data created successfully'
+      });
+    }
+  });
+
+  const { mutateAsync: mutateAsyncUpdate } = useEditEnhance({
+    onSuccess: () => {
+      refetchQueries(['list_enhance']);
+      setOpen(false);
+      toast({
+        variant: 'default',
+        title: 'Data updated successfully'
       });
     }
   });
@@ -62,11 +77,28 @@ export const FormSection = () => {
   } = form;
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    mutateAsync({
-      type: data.type as Type,
-      value: data.value
-    });
+    if (actionType === 'create') {
+      mutateAsync({
+        type: data.type as Type,
+        value: data.value
+      });
+    } else if (actionType === 'edit') {
+      mutateAsyncUpdate({
+        id: data.id,
+        type: data.type as Type,
+        value: data.value
+      });
+    }
   };
+
+  React.useEffect(() => {
+    if (actionType === 'edit') {
+      form.setValue('id', data.id);
+      form.setValue('type', data.type);
+      form.setValue('value', data.value);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [actionType]);
 
   return (
     <Form {...form}>
@@ -79,8 +111,9 @@ export const FormSection = () => {
               <FormItem>
                 <FormLabel>Enhance Type</FormLabel>
                 <Select
+                  key={actionType}
                   onValueChange={field.onChange}
-                  defaultValue={field.value}
+                  value={field.value}
                 >
                   <FormControl>
                     <SelectTrigger>

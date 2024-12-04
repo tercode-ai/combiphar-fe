@@ -49,3 +49,11 @@ export type BreadcrumbItem = {
   id: string;
   name: string;
 };
+
+export type ActionType =
+  | 'create'
+  | 'detail'
+  | 'edit'
+  | 'import'
+  | 'delete'
+  | undefined;
