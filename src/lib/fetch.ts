@@ -1,35 +1,48 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { toast } from '@/components/ui/use-toast';
 import { capitalizeFirstLetter } from './utils';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { FileUploadInput } from '@/types/file';
 import { LoginInput } from '@/types/auth';
 import { ChatInput } from '@/types/chat';
 import api from './api';
 import Cookies from 'js-cookie';
 
+interface FetcherParams {
+  url: string;
+  method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+  data?: Record<string, any> | FormData | null;
+  headers?: Record<string, string>;
+  withSessionId?: boolean;
+}
+
+const fetcher = async <T = any>({
+  url,
+  method = 'GET',
+  data = null,
+  headers = {},
+  withSessionId = false
+}: FetcherParams): Promise<T> => {
+  const session_id = Cookies.get('session_id');
+
+  try {
+    const response: AxiosResponse<T> = await api({
+      url,
+      method,
+      data: {
+        ...data,
+        session_id: withSessionId ? session_id : undefined
+      },
+      headers
+    });
+    return response.data;
+  } catch (error: any) {
+    console.error('Failed to fetch:', error);
+    throw error;
+  }
+};
+
 export const apiClient = {
-  async login(path: string, input: any) {
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_ENDPOINT}${path}`,
-        {
-          headers: {
-            Authorization: `Basic ${input.key}`
-          }
-        }
-      );
-      return response.data;
-    } catch (error: any) {
-      toast({
-        variant: 'destructive',
-        description: capitalizeFirstLetter(
-          error.response?.data?.error || 'An error occurred'
-        )
-      });
-      return error;
-    }
-  },
   async get(path: string) {
     try {
       const response = await api.get(path);
@@ -82,16 +95,53 @@ export const apiClient = {
 };
 
 export const auth = {
-  login: (key: LoginInput) => apiClient.login('/login', key),
-  logout: () => apiClient.post('/logout', {})
+  login: ({ key }: LoginInput) =>
+    fetcher({
+      url: '/login',
+      headers: {
+        Authorization: `Basic ${key}`
+      }
+    }),
+  logout: () =>
+    fetcher({
+      url: '/logout',
+      method: 'POST',
+      withSessionId: true
+    })
 };
 
 export const file = {
-  list: () => apiClient.get('/docs'),
-  upload: (payload: FileUploadInput) => apiClient.postFile('/upload', payload)
+  list: () =>
+    fetcher({
+      url: '/docs'
+    }),
+  upload: ({ file }: FileUploadInput) => {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return fetcher({
+      url: '/upload',
+      method: 'POST',
+      data: formData,
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+  }
 };
 
 export const chat = {
-  ask: (payload: ChatInput) => apiClient.post('/ask', payload),
-  clear: () => apiClient.post('/clear-chat', {})
+  ask: (payload: ChatInput) =>
+    fetcher({
+      url: '/ask',
+      method: 'POST',
+      data: payload,
+      withSessionId: true
+    }),
+  clear: () =>
+    fetcher({
+      url: '/clear-chat',
+      method: 'POST',
+      withSessionId: true
+    })
 };
