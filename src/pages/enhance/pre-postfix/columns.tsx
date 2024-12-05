@@ -2,7 +2,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { Enhance } from '@/types/enhance';
 import { formatDate } from '@/lib/utils';
 import { ActionButtons } from '@/components/shared/row-action-button';
-import { useEnhanceState } from './hook/table';
+import { useEnhanceState } from '../hook/table';
 import { ActionType } from '@/types';
 
 const typeLabel = {

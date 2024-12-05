@@ -1,7 +1,7 @@
 import { FEDataTable } from '@/components/shared/data-table-fe';
 import { columns } from './columns';
 import { EnhanceTypes } from '@/types/enhance';
-import { useGetEnhance } from './queries';
+import { useGetEnhance } from '../queries';
 import React from 'react';
 import { useSearchParams } from 'react-router-dom';
 

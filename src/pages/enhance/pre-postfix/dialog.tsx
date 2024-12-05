@@ -1,9 +1,9 @@
 import React from 'react';
 import { FormSection } from './form';
-import { useEnhanceState } from './hook/table';
+import { useEnhanceState } from '../hook/table';
 import { capitalizeFirstLetter } from '@/lib/utils';
 import { DeleteSection as DeleteSectionPrimitive } from '@/components/shared/delete';
-import { useDeleteEnhance } from './queries';
+import { useDeleteEnhance } from '../queries';
 import { refetchQueries } from '@/lib/refetcher';
 import { useDialog } from '@/hooks/use-dialog';
 import { toast } from '@/components/ui/use-toast';

@@ -21,13 +21,13 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { Textarea } from '@/components/ui/textarea';
-import { useCreateEnhance, useEditEnhance } from './queries';
+import { useCreateEnhance, useEditEnhance } from '../queries';
 import { EnhanceTypes as Type } from '@/types/enhance';
 import { useDialog } from '@/hooks/use-dialog';
 import { toast } from '@/components/ui/use-toast';
 import { refetchQueries } from '@/lib/refetcher';
 import React from 'react';
-import { useEnhanceState } from './hook/table';
+import { useEnhanceState } from '../hook/table';
 import { Loader2 } from 'lucide-react';
 
 const formSchema = z.object({
