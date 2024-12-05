@@ -7,7 +7,8 @@ import { ActionType } from '@/types';
 
 const typeLabel = {
   prefix: 'Prefix',
-  postfix: 'Postfix'
+  postfix: 'Postfix',
+  intro: 'Intro'
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -34,7 +35,10 @@ export const columns: ColumnDef<Enhance>[] = [
   },
   {
     accessorKey: 'value',
-    header: 'Value'
+    header: 'Value',
+    cell: ({ row }) => (
+      <div className="max-w-[50vw]">{row.getValue('value')}</div>
+    )
   },
   {
     accessorKey: 'timestamp',

@@ -1,7 +1,8 @@
+import { LoaderCircle } from '@/components/shared/loader';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { lazy, Suspense } from 'react';
 
-const PromptEnhancement = lazy(() => import('./pre-postfix'));
+const PromptEnhancement = lazy(() => import('./prompt'));
 const ChatGreeting = lazy(() => import('./intro'));
 
 export default function TemuanPage() {
@@ -13,12 +14,12 @@ export default function TemuanPage() {
           <TabsTrigger value="intro">Chat Greeting</TabsTrigger>
         </TabsList>
         <TabsContent value="prompt">
-          <Suspense fallback="Failed to load component">
+          <Suspense fallback={<LoaderCircle />}>
             <PromptEnhancement />
           </Suspense>
         </TabsContent>
         <TabsContent value="intro">
-          <Suspense fallback="Failed to load component">
+          <Suspense fallback={<LoaderCircle />}>
             <ChatGreeting />
           </Suspense>
         </TabsContent>

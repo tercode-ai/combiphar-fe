@@ -11,13 +11,9 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { Textarea } from '@/components/ui/textarea';
-import { useCreateEnhance, useUpdateEnhance } from '../pre-postfix/queries';
-import { EnhanceTypes as Type } from '@/types/enhance';
-import { useDialog } from '@/hooks/use-dialog';
+import { useCreateIntro, useGetIntro, useUpdateIntro } from './queries';
 import { toast } from '@/components/ui/use-toast';
-import { refetchQueries } from '@/lib/refetcher';
 import React from 'react';
-import { useEnhanceState } from '../hook/table';
 import { Loader2 } from 'lucide-react';
 
 const formSchema = z.object({
@@ -31,27 +27,33 @@ const formSchema = z.object({
 });
 
 export const FormSection = () => {
-  const { setOpen } = useDialog();
-  const { actionType, data } = useEnhanceState();
-
   const [isEdit, setIsEdit] = React.useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = React.useState<boolean>(false);
 
-  const { mutateAsync } = useCreateEnhance({
+  const { mutateAsync } = useCreateIntro({
     onSuccess: () => {
-      refetchQueries(['list_enhance']);
-      setOpen(false);
       toast({
         variant: 'default',
-        title: 'Data created successfully'
+        title: 'Data updated successfully'
       });
     }
   });
 
-  const { mutateAsync: mutateAsyncUpdate } = useUpdateEnhance({
+  const { data: response } = useGetIntro();
+
+  React.useEffect(() => {
+    if (response?.data?.[0]) {
+      const [id, type, value] = response.data[0];
+
+      form.setValue('id', id);
+      form.setValue('type', type);
+      form.setValue('value', value);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [response]);
+
+  const { mutateAsync: mutateAsyncUpdate } = useUpdateIntro({
     onSuccess: () => {
-      refetchQueries(['list_enhance']);
-      setOpen(false);
       toast({
         variant: 'default',
         title: 'Data updated successfully'
@@ -70,31 +72,21 @@ export const FormSection = () => {
     setIsEdit(!isEdit);
   };
 
-  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+  const onSubmit = async ({ id, value }: z.infer<typeof formSchema>) => {
     setIsSubmitting(true);
-    if (actionType === 'create') {
-      await mutateAsync({
-        type: data.type as Type,
-        value: data.value
-      });
-    } else if (actionType === 'edit') {
+    if (Number(response?.data?.length) > 0) {
       await mutateAsyncUpdate({
-        id: String(data.id),
-        type: data.type as Type,
-        value: data.value
+        id: String(id),
+        value
+      });
+    } else {
+      await mutateAsync({
+        value
       });
     }
     setIsSubmitting(false);
+    setIsEdit(false);
   };
-
-  React.useEffect(() => {
-    if (actionType === 'edit') {
-      form.setValue('id', data.id);
-      form.setValue('type', data.type);
-      form.setValue('value', data.value);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [actionType]);
 
   return (
     <Form {...form}>
@@ -119,7 +111,7 @@ export const FormSection = () => {
             )}
           />
         </section>
-        <section className="space-x-2">
+        <section className="flex gap-2">
           <Button
             disabled={isSubmitting}
             variant={isEdit ? 'outline' : 'default'}
@@ -129,7 +121,11 @@ export const FormSection = () => {
           >
             {isEdit ? 'Cancel' : 'Edit'}
           </Button>
-          <Button disabled={isSubmitting || !isEdit} type="submit" className="">
+          <Button
+            disabled={isSubmitting || !isEdit}
+            type="submit"
+            className="w-24"
+          >
             {isSubmitting ? <Loader2 className="animate-spin" /> : 'Submit'}
           </Button>
         </section>
