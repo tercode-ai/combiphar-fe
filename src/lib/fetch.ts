@@ -12,6 +12,7 @@ import {
   DeleteEnhanceInput,
   UpdateEnhanceInput
 } from '@/types/enhance';
+import { CreateIntroInput, UpdateIntroInput } from '@/types/intro';
 
 interface FetcherParams {
   url: string;
@@ -130,6 +131,25 @@ export const enhance = {
   delete: (input: DeleteEnhanceInput) =>
     fetcher({
       url: '/enhance-delete',
+      method: 'POST',
+      data: input
+    })
+};
+
+export const intro = {
+  get: () =>
+    fetcher({
+      url: '/intro'
+    }),
+  create: (input: CreateIntroInput) =>
+    fetcher({
+      url: '/intro-create',
+      method: 'POST',
+      data: input
+    }),
+  update: (input: UpdateIntroInput) =>
+    fetcher({
+      url: '/intro-update',
       method: 'POST',
       data: input
     })

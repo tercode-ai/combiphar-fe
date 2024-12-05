@@ -21,7 +21,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { Textarea } from '@/components/ui/textarea';
-import { useCreateEnhance, useEditEnhance } from '../queries';
+import { useCreateEnhance, useUpdateEnhance } from './queries';
 import { EnhanceTypes as Type } from '@/types/enhance';
 import { useDialog } from '@/hooks/use-dialog';
 import { toast } from '@/components/ui/use-toast';
@@ -57,7 +57,7 @@ export const FormSection = () => {
     }
   });
 
-  const { mutateAsync: mutateAsyncUpdate } = useEditEnhance({
+  const { mutateAsync: mutateAsyncUpdate } = useUpdateEnhance({
     onSuccess: () => {
       refetchQueries(['list_enhance']);
       setOpen(false);
