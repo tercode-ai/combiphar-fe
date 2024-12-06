@@ -5,6 +5,7 @@ import React from 'react';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { RenderSourceDoc } from './source-document';
+import { getGreeting } from '@/lib/utils';
 
 export const ChatWithTypingEffect = ({
   chatId,
@@ -51,7 +52,12 @@ export const ChatWithTypingEffect = ({
 
   return (
     <>
-      <RenderChat message={typedMessage} />
+      <RenderChat
+        message={typedMessage}
+        context={{
+          greeting: getGreeting()
+        }}
+      />
       {sourceDocument && showDoc && (
         <RenderSourceDoc sources={sourceDocument} />
       )}
@@ -59,19 +65,34 @@ export const ChatWithTypingEffect = ({
   );
 };
 
-export const RenderChat = ({ message }: { message: string }) =>
-  message.split('```').map((part: string, index: number) => {
-    if (index % 2 === 0) {
-      return (
-        <Markdown key={index} remarkPlugins={[remarkGfm]}>
-          {part}
-        </Markdown>
-      );
-    } else {
-      return (
-        <pre className="whitespace-pre-wrap pt-2" key={index}>
-          <CodeDisplayBlock code={part} lang="" />
-        </pre>
-      );
-    }
-  });
+export const RenderChat = ({
+  message,
+  context
+}: {
+  message: string;
+  context: Record<string, string>;
+}) =>
+  replacePlaceholders(message, context)
+    .split('```')
+    .map((part: string, index: number) => {
+      if (index % 2 === 0) {
+        return (
+          <Markdown key={index} remarkPlugins={[remarkGfm]}>
+            {part}
+          </Markdown>
+        );
+      } else {
+        return (
+          <pre className="whitespace-pre-wrap pt-2" key={index}>
+            <CodeDisplayBlock code={part} lang="" />
+          </pre>
+        );
+      }
+    });
+
+const replacePlaceholders = (
+  template: string,
+  context: Record<string, string>
+): string => {
+  return template.replace(/{{(.*?)}}/g, (_, key) => context[key.trim()] || '');
+};

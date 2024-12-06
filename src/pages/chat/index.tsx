@@ -16,7 +16,7 @@ import { usePathname } from '@/routes/hooks';
 import { ChatActions } from './chat-action';
 import { InitialMessage } from './initial';
 import { ChatWithTypingEffect, RenderChat } from './chat-render';
-import { getUniqSourceDocument } from '@/lib/utils';
+import { getGreeting, getUniqSourceDocument } from '@/lib/utils';
 import { RenderSourceDoc } from './source-document';
 import { ChatClear } from './chat-clear';
 import { useGetIntro } from '../enhance/intro/queries';
@@ -157,7 +157,12 @@ const ChatPage = () => {
                     />
                   ) : (
                     <>
-                      <RenderChat message={message} />
+                      <RenderChat
+                        message={message}
+                        context={{
+                          greeting: getGreeting()
+                        }}
+                      />
                       {sourceDocument && (
                         <RenderSourceDoc sources={sourceDocument} />
                       )}
