@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { toast } from '@/components/ui/use-toast';
 import { capitalizeFirstLetter } from './utils';
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import { FileUploadInput } from '@/types/file';
 import { LoginInput } from '@/types/auth';
 import { ChatInput } from '@/types/chat';
@@ -14,143 +14,108 @@ import {
 } from '@/types/enhance';
 import { CreateIntroInput, UpdateIntroInput } from '@/types/intro';
 
-interface FetcherParams {
-  url: string;
-  method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
-  data?: Record<string, any> | FormData | null;
-  headers?: Record<string, string>;
-  withSessionId?: boolean;
-}
-
-const fetcher = async <T = any>({
-  url,
-  method = 'GET',
-  data = null,
-  headers = {},
-  withSessionId = false
-}: FetcherParams): Promise<T> => {
-  const session_id = Cookies.get('session_id');
-
-  try {
-    const response: AxiosResponse<T> = await api({
-      url,
-      method,
-      data: {
-        ...data,
-        session_id: withSessionId ? session_id : undefined
-      },
-      headers
-    });
-    return response.data;
-  } catch (error: any) {
-    toast({
-      title: capitalizeFirstLetter(
-        error.response?.data?.error || 'An error occurred'
-      ),
-      duration: 5000
-    });
-    throw error;
-  }
-};
-
-const fileFetcher = async (path: string, { file }: FileUploadInput) => {
-  const formData = new FormData();
-  formData.append('file', file);
-  try {
-    const response = await api.post(path, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    });
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      throw new Error(error.response?.data?.message || 'File upload failed');
+export const apiClient = {
+  async login(path: string, input: any) {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_ENDPOINT}${path}`,
+        {
+          headers: {
+            Authorization: `Basic ${input.key}`
+          }
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      toast({
+        variant: 'destructive',
+        description: capitalizeFirstLetter(
+          error.response?.data?.error || 'An error occurred'
+        )
+      });
+      return error;
     }
-    throw error;
+  },
+  async get(path: string) {
+    try {
+      const response = await api.get(path);
+      return response.data;
+    } catch (error: any) {
+      toast({
+        variant: 'destructive',
+        description: capitalizeFirstLetter(
+          error.response?.data?.error || 'An error occurred'
+        )
+      });
+      return error;
+    }
+  },
+  async post(path: string, input: any) {
+    const session_id = Cookies.get('session_id');
+    try {
+      const response = await api.post(path, {
+        ...input,
+        session_id
+      });
+      return response.data;
+    } catch (error: any) {
+      toast({
+        variant: 'destructive',
+        description: capitalizeFirstLetter(
+          error.response?.data?.error || 'An error occurred'
+        )
+      });
+      return error;
+    }
+  },
+  async postFile(path: string, { file }: FileUploadInput) {
+    const formData = new FormData();
+    formData.append('file', file);
+    try {
+      const response = await api.post(path, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data?.message || 'File upload failed');
+      }
+      throw error;
+    }
   }
 };
 
 export const auth = {
-  login: ({ key }: LoginInput) =>
-    fetcher({
-      url: '/login',
-      headers: {
-        Authorization: `Basic ${key}`
-      }
-    }),
-  logout: () =>
-    fetcher({
-      url: '/logout',
-      method: 'POST',
-      withSessionId: true
-    })
+  login: (key: LoginInput) => apiClient.login('/login', key),
+  logout: () => apiClient.post('/logout', {})
 };
 
 export const file = {
-  list: () =>
-    fetcher({
-      url: '/docs'
-    }),
-  upload: ({ file }: FileUploadInput) => fileFetcher('/upload', { file })
+  list: () => apiClient.get('/docs'),
+  upload: (payload: FileUploadInput) => apiClient.postFile('/upload', payload)
 };
 
 export const chat = {
-  ask: (input: ChatInput) =>
-    fetcher({
-      url: '/ask',
-      method: 'POST',
-      data: input,
-      withSessionId: true
-    }),
-  clear: () =>
-    fetcher({
-      url: '/clear-chat',
-      method: 'POST',
-      withSessionId: true
-    })
+  ask: (payload: ChatInput) => apiClient.post('/ask', payload),
+  clear: () => apiClient.post('/clear-chat', {})
 };
 
 export const enhance = {
-  list: () =>
-    fetcher({
-      url: '/enhance'
-    }),
+  list: () => apiClient.get('/enhance'),
   create: (input: CreateEnhanceInput) =>
-    fetcher({
-      url: '/enhance-create',
-      method: 'POST',
-      data: input
-    }),
+    apiClient.post('/enhance-create', input),
   update: (input: UpdateEnhanceInput) =>
-    fetcher({
-      url: '/enhance-update',
-      method: 'POST',
-      data: input
-    }),
+    apiClient.post('/enhance-update', input),
   delete: (input: DeleteEnhanceInput) =>
-    fetcher({
-      url: '/enhance-delete',
-      method: 'POST',
-      data: input
-    })
+    apiClient.post('/enhance-delete', input)
 };
 
 export const intro = {
-  get: () =>
-    fetcher({
-      url: '/intro'
-    }),
-  create: (input: CreateIntroInput) =>
-    fetcher({
-      url: '/intro-create',
-      method: 'POST',
-      data: input
-    }),
-  update: (input: UpdateIntroInput) =>
-    fetcher({
-      url: '/intro-update',
-      method: 'POST',
-      data: input
-    })
+  get: () => apiClient.get('/intro'),
+  create: ({ value }: CreateIntroInput) =>
+    apiClient.post('/intro-create', { value }),
+  update: ({ id, value }: UpdateIntroInput) =>
+    apiClient.post('/enhance-update', { id, value })
 };
