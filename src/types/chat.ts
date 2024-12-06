@@ -1,3 +1,5 @@
+export type chatRole = 'user' | 'assistant';
+
 export type ChatInput = {
   question: string;
 };
@@ -13,7 +15,7 @@ export type ChatResult = {
 
 export type Message = {
   id: string;
-  role: 'user' | 'assistant';
+  role: chatRole;
   message: string;
   isTyping?: boolean;
   isCopied?: boolean;

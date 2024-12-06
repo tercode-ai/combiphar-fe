@@ -15,6 +15,8 @@ import { useCreateIntro, useGetIntro, useUpdateIntro } from './queries';
 import { toast } from '@/components/ui/use-toast';
 import React from 'react';
 import { Loader2 } from 'lucide-react';
+import { useChatStore } from '@/hooks/use-chatstore';
+import { refetchQueries } from '@/lib/refetcher';
 
 const formSchema = z.object({
   id: z.string().optional(),
@@ -27,6 +29,8 @@ const formSchema = z.object({
 });
 
 export const FormSection = () => {
+  const { setFetch } = useChatStore();
+
   const [isEdit, setIsEdit] = React.useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = React.useState<boolean>(false);
 
@@ -36,6 +40,8 @@ export const FormSection = () => {
         variant: 'default',
         title: 'Data updated successfully'
       });
+      setFetch(true);
+      refetchQueries(['list_intro']);
     }
   });
 
@@ -58,6 +64,8 @@ export const FormSection = () => {
         variant: 'default',
         title: 'Data updated successfully'
       });
+      setFetch(true);
+      refetchQueries(['list_intro']);
     }
   });
 

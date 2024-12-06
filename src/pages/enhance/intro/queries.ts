@@ -8,13 +8,17 @@ import {
 import {
   useMutation,
   UseMutationOptions,
-  useQuery
+  useQuery,
+  UseQueryOptions
 } from '@tanstack/react-query';
 
-export const useGetIntro = () => {
+export const useGetIntro = (
+  options?: Partial<UseQueryOptions<ListIntroResponse>>
+) => {
   return useQuery<ListIntroResponse>({
     queryKey: ['list_intro'],
-    queryFn: async () => intro.get()
+    queryFn: async () => intro.get(),
+    ...options
   });
 };
 

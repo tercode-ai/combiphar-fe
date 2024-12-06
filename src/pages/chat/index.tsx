@@ -16,16 +16,17 @@ import { usePathname } from '@/routes/hooks';
 import { ChatActions } from './chat-action';
 import { InitialMessage } from './initial';
 import { ChatWithTypingEffect, RenderChat } from './chat-render';
-import { defaultChat } from '@/constants/chat';
 import { getUniqSourceDocument } from '@/lib/utils';
 import { RenderSourceDoc } from './source-document';
 import { ChatClear } from './chat-clear';
+import { useGetIntro } from '../enhance/intro/queries';
+import { chatRole } from '@/types/chat';
 
 const ChatPage = () => {
   const [input, setInput] = React.useState<string>('');
   const [isGenerating, setIsGenerating] = React.useState<boolean>(false);
 
-  const { messages, addChat, setChat } = useChatStore();
+  const { messages, addChat, setChat, shouldFetch, setFetch } = useChatStore();
 
   const { mutate, isPending } = useChat({
     onSuccess: ({ result }) => {
@@ -41,6 +42,10 @@ const ChatPage = () => {
             : undefined
       });
     }
+  });
+
+  const { data: intro } = useGetIntro({
+    enabled: shouldFetch
   });
 
   const isChatPage = usePathname() === '/chat';
@@ -71,11 +76,26 @@ const ChatPage = () => {
         top: scrollContainer.scrollHeight
       });
     }
-
-    if (messages.length === 0) {
-      setChat(defaultChat);
-    }
   }, [messages]);
+
+  React.useEffect(() => {
+    if (shouldFetch && intro?.data && intro?.data.length > 0) {
+      const raw = intro.data[0];
+      console.log(intro);
+      const chatIntroduction = [
+        {
+          id: new Date().getTime().toString(),
+          role: 'assistant' as chatRole,
+          message: raw[2],
+          isTyping: true
+        }
+      ];
+      setChat(chatIntroduction);
+      setFetch(false);
+    }
+  }, [intro, shouldFetch]);
+
+  React.useEffect(() => {}, [intro]);
 
   const formRef = React.useRef<HTMLFormElement>(null);
 

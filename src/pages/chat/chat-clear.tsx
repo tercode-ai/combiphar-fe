@@ -5,10 +5,12 @@ import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
 
 export const ChatClear = () => {
+  const { setFetch } = useChatStore();
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const { mutateAsync } = useClearChat({
     onSuccess: () => {
       resetChat();
+      setFetch(true);
     }
   });
 
