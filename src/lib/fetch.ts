@@ -92,7 +92,12 @@ export const file = {
     fetcher({
       url: '/docs'
     }),
-  upload: ({ file }: FileUploadInput) => fileFetcher('/upload', { file })
+  upload: ({ file }: FileUploadInput) => fileFetcher('/upload', { file }),
+  reset: () =>
+    fetcher({
+      url: '/delete_all',
+      method: 'POST'
+    })
 };
 
 export const chat = {

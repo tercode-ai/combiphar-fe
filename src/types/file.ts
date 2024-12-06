@@ -11,3 +11,7 @@ export type FileUploadResponse = {
 export type FileUploadInput = {
   file: File;
 };
+
+export type FileResetResponse = {
+  message: string;
+};

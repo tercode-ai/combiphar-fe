@@ -5,21 +5,59 @@ import { Button } from '@/components/ui/button';
 import { useDialog } from '@/hooks/use-dialog';
 import { FileUploadStatus, useFiles } from '@/hooks/use-files';
 import React from 'react';
-import { useFileMutation } from './queries';
+import { useFileMutation, useFileReset } from './queries';
 import { refetchQueries } from '@/lib/refetcher';
-import { Upload } from 'lucide-react';
+import { RefreshCcw, Upload } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
+
+type ModeType = 'upload' | 'reset';
 
 const DialogLayout = React.lazy(
   () => import('@/components/layout/dialog-layout')
 );
 
-export const UploadSection = () => {
+export const UploadComponent = () => {
+  const [mode, setMode] = React.useState<ModeType>('upload');
+
+  return (
+    <>
+      <React.Suspense fallback="...">
+        <DialogLayout
+          title={
+            mode === 'upload'
+              ? 'Upload Document to Learn'
+              : 'Reset All Documents'
+          }
+          footer={<RenderFooter mode={mode} />}
+        >
+          <>
+            {mode === 'upload' && <UploadSection />}
+            {mode === 'reset' && <ResetSection />}
+          </>
+        </DialogLayout>
+      </React.Suspense>
+      <ActionSection setMode={setMode} />
+    </>
+  );
+};
+
+const RenderFooter = ({ mode }: { mode: ModeType }) => {
   const { setOpen } = useDialog();
   const { files, setFiles, isSubmitting, setIsSubmitting } = useFiles();
-  const { mutateAsync } = useFileMutation({
+
+  const { mutateAsync: asyncUpload } = useFileMutation({
     onSuccess: () => {
       refetchQueries(['file_list']);
+    }
+  });
+
+  const { mutateAsync: asyncReset } = useFileReset({
+    onSuccess: () => {
+      refetchQueries(['file_list']);
+      setOpen(false);
+      toast({
+        title: 'All Documents Deleted!'
+      });
     }
   });
 
@@ -32,7 +70,7 @@ export const UploadSection = () => {
       const fileId = item.id;
       setFileStatus(fileId, 'processing');
       try {
-        await mutateAsync({ file: item.file });
+        await asyncUpload({ file: item.file });
         setFileStatus(fileId, 'success');
       } catch (error: any) {
         setFileStatus(fileId, 'failed', error.message);
@@ -42,7 +80,11 @@ export const UploadSection = () => {
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
-    await uploadFilesSequential(files);
+    if (mode === 'upload') {
+      await uploadFilesSequential(files);
+    } else if (mode === 'reset') {
+      await asyncReset();
+    }
     setIsSubmitting(false);
   };
 
@@ -60,54 +102,96 @@ export const UploadSection = () => {
   }, [files]);
 
   return (
-    <>
+    <Button
+      disabled={(mode === 'upload' && files.length === 0) || isSubmitting}
+      className="w-full"
+      onClick={handleSubmit}
+    >
+      {isSubmitting ? (
+        <div className="flex items-center gap-2">
+          <span>
+            {mode === 'upload' && 'Uploading'}
+            {mode === 'reset' && 'Resetting'}
+          </span>{' '}
+        </div>
+      ) : (
+        <>
+          {mode === 'upload' && (
+            <>
+              {`Upload File${files.length > 1 ? 's' : ''}`}
+              <Upload className="ml-2 size-4" />
+            </>
+          )}
+          {mode === 'reset' && (
+            <>
+              Reset Documents
+              <RefreshCcw className="ml-2 size-4" />
+            </>
+          )}
+        </>
+      )}
+    </Button>
+  );
+};
+
+const UploadSection = () => {
+  return (
+    <section className="flex flex-col space-y-4">
+      <FileUpload
+        accept={{
+          'application/pdf': ['.pdf'],
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+            ['.docx'],
+          'application/msword': ['.doc'],
+          'text/plain': ['.txt']
+        }}
+        maxFiles={5}
+        maxSize={10}
+      />
+    </section>
+  );
+};
+
+const ResetSection = () => {
+  return (
+    <section>
+      <h1 className="text-sm">
+        All document data will be cleared from the database. Continue?
+      </h1>
+    </section>
+  );
+};
+
+interface ResetProps {
+  setMode: (value: ModeType) => void;
+}
+
+const ActionSection = ({ setMode }: ResetProps) => {
+  const { setFiles } = useFiles();
+  const { setOpen } = useDialog();
+
+  return (
+    <section className="fixed bottom-4 flex gap-2">
       <Button
-        className="fixed bottom-4 gap-4 bg-primary px-10 font-semibold transition-transform duration-100 ease-in hover:brightness-90"
+        className="bg-primary px-8 font-semibold hover:brightness-90"
         onClick={() => {
           setFiles([]);
           setOpen(true);
+          setMode('upload');
         }}
       >
         Add Files
       </Button>
-      <React.Suspense fallback="...">
-        <DialogLayout
-          title="Upload Document to Learn"
-          // desc="File .pdf .docx .txt, maks 10 MB."
-          footer={
-            <Button
-              disabled={files.length === 0 || isSubmitting}
-              className="w-full"
-              onClick={handleSubmit}
-            >
-              {isSubmitting ? (
-                <div className="flex items-center gap-2">
-                  <span>Uploading</span>{' '}
-                </div>
-              ) : (
-                <>
-                  {`Upload File${files.length > 1 ? 's' : ''}`}
-                  <Upload className="ml-2 size-4" />
-                </>
-              )}
-            </Button>
-          }
-        >
-          <div className="flex flex-col space-y-4">
-            <FileUpload
-              accept={{
-                'application/pdf': ['.pdf'],
-                'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-                  ['.docx'],
-                'application/msword': ['.doc'],
-                'text/plain': ['.txt']
-              }}
-              maxFiles={5}
-              maxSize={10}
-            />
-          </div>
-        </DialogLayout>
-      </React.Suspense>
-    </>
+      <Button
+        className="bg-primary px-6 font-semibold hover:brightness-90"
+        onClick={() => {
+          setFiles([]);
+          setOpen(true);
+          setMode('reset');
+        }}
+      >
+        Reset
+      </Button>
+    </section>
   );
 };
