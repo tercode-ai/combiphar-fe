@@ -5,7 +5,8 @@ import {
   FormField,
   FormItem,
   FormControl,
-  FormMessage
+  FormMessage,
+  FormDescription
 } from '@/components/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -111,6 +112,11 @@ export const FormSection = () => {
                     {...field}
                   />
                 </FormControl>
+                <FormDescription>
+                  Use
+                  {' {{greeting}} '}
+                  to dynamically display a greeting based on the current time.
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
