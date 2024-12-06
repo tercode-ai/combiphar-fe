@@ -51,6 +51,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, [Cookies.get('cm')]);
 
   const login = (token: string) => {
+    localStorage.setItem('loginState', 'login auth provider');
+    localStorage.setItem('loginData', JSON.stringify({ token, ses: uuid() }));
     Cookies.set('cm', token, { expires: 7 });
     Cookies.set('session_id', uuid());
     setIsAuthenticated(true);

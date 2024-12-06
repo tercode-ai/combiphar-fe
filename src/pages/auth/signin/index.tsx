@@ -17,9 +17,11 @@ export default function SignInPage() {
   const { mutate } = useLogin({
     onSuccess: ({ message }) => {
       if (message === 'success') {
+        localStorage.setItem('loginState', 'success hit API');
         login(key);
         push('/chat');
       } else {
+        localStorage.setItem('loginState', 'invalid credential');
         toast({
           title: 'Invalid credential'
         });
