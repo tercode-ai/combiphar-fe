@@ -30,6 +30,7 @@ const fetcher = async <T = any>({
   withSessionId = false
 }: FetcherParams): Promise<T> => {
   const session_id = Cookies.get('session_id');
+  console.log(session_id);
 
   try {
     const response: AxiosResponse<T> = await api({
