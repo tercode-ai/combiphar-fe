@@ -180,7 +180,7 @@ const ChatPage = () => {
         {/* Loading */}
         {isGenerating && (
           <ChatBubble variant="received">
-            <ChatBubbleAvatar src="" fallback="🤖" />
+            <ChatBubbleAvatar src="/vita.jpg" fallback="🤖" />
             <ChatBubbleMessage isLoading />
           </ChatBubble>
         )}
