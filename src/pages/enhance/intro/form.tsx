@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -20,9 +21,6 @@ import { refetchQueries } from '@/lib/refetcher';
 
 const formSchema = z.object({
   id: z.string().optional(),
-  type: z.string().min(1, {
-    message: 'Required'
-  }),
   value: z.string().min(1, {
     message: 'Required'
   })
@@ -49,10 +47,9 @@ export const FormSection = () => {
 
   React.useEffect(() => {
     if (response?.data?.[0]) {
-      const [id, type, value] = response.data[0];
+      const [id, _, value] = response.data[0];
 
       form.setValue('id', id);
-      form.setValue('type', type);
       form.setValue('value', value);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -72,7 +69,7 @@ export const FormSection = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      type: ''
+      value: ''
     }
   });
 

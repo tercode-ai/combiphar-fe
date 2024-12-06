@@ -81,7 +81,6 @@ const ChatPage = () => {
   React.useEffect(() => {
     if (shouldFetch && intro?.data && intro?.data.length > 0) {
       const raw = intro.data[0];
-      console.log(intro);
       const chatIntroduction = [
         {
           id: new Date().getTime().toString(),

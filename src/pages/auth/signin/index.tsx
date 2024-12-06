@@ -5,10 +5,13 @@ import { useSearchParams } from 'react-router-dom';
 import { useRouter } from '@/routes/hooks';
 import { toast } from '@/components/ui/use-toast';
 import { useAuth } from '@/providers/auth-provider';
+import { useChatStore } from '@/hooks/use-chatstore';
 
 export default function SignInPage() {
-  const { push } = useRouter();
   const { login } = useAuth();
+  const { push } = useRouter();
+
+  const { setFetch } = useChatStore();
 
   const [searchParams] = useSearchParams();
 
@@ -17,11 +20,10 @@ export default function SignInPage() {
   const { mutate } = useLogin({
     onSuccess: ({ message }) => {
       if (message === 'success') {
-        localStorage.setItem('loginState', 'success hit API');
         login(key);
         push('/chat');
+        setFetch(true);
       } else {
-        localStorage.setItem('loginState', 'invalid credential');
         toast({
           title: 'Invalid credential'
         });
