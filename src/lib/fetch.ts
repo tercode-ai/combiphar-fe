@@ -32,6 +32,19 @@ const fetcher = async <T = any>({
   const session_id = Cookies.get('session_id');
 
   try {
+    if (withSessionId) {
+      console.log(session_id);
+      if (
+        session_id === '' ||
+        session_id === undefined ||
+        session_id === null
+      ) {
+        Cookies.remove('cm');
+        Cookies.remove('session_id');
+        localStorage.removeItem('combiphar-chats');
+        window.location.href = '/thankyou';
+      }
+    }
     const response: AxiosResponse<T> = await api({
       url,
       method,

@@ -51,7 +51,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, [Cookies.get('cm')]);
 
   const login = (token: string) => {
-    Cookies.set('cm', token, { expires: 7, sameSite: 'None', secure: true });
+    Cookies.set('cm', token, { sameSite: 'None', secure: true });
     Cookies.set('session_id', uuid(), { sameSite: 'None', secure: true });
     setIsAuthenticated(true);
   };

@@ -162,11 +162,11 @@ const ResetSection = () => {
   );
 };
 
-interface ResetProps {
+interface ActionProps {
   setMode: (value: ModeType) => void;
 }
 
-const ActionSection = ({ setMode }: ResetProps) => {
+const ActionSection = ({ setMode }: ActionProps) => {
   const { setFiles } = useFiles();
   const { setOpen } = useDialog();
 
