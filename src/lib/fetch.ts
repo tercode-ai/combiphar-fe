@@ -33,7 +33,6 @@ const fetcher = async <T = any>({
 
   try {
     if (withSessionId) {
-      console.log(session_id);
       if (
         session_id === '' ||
         session_id === undefined ||
