@@ -5,10 +5,11 @@ import { Button } from '@/components/ui/button';
 import { useDialog } from '@/hooks/use-dialog';
 import { FileUploadStatus, useFiles } from '@/hooks/use-files';
 import React from 'react';
-import { useFileMutation, useFileReset } from './queries';
 import { refetchQueries } from '@/lib/refetcher';
 import { RefreshCcw, Upload } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
+import { useUploadFileMutation } from '../_hooks/use-upload-file';
+import { useFileResetMutation } from '../_hooks/use-file-reset';
 
 type ModeType = 'upload' | 'reset';
 
@@ -45,13 +46,13 @@ const RenderFooter = ({ mode }: { mode: ModeType }) => {
   const { setOpen } = useDialog();
   const { files, setFiles, isSubmitting, setIsSubmitting } = useFiles();
 
-  const { mutateAsync: asyncUpload } = useFileMutation({
+  const { mutateAsync: asyncUpload } = useUploadFileMutation({
     onSuccess: () => {
       refetchQueries(['file_list']);
     }
   });
 
-  const { mutateAsync: asyncReset } = useFileReset({
+  const { mutateAsync: asyncReset } = useFileResetMutation({
     onSuccess: () => {
       refetchQueries(['file_list']);
       setOpen(false);

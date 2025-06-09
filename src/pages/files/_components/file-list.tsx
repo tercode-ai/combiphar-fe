@@ -1,10 +1,10 @@
 import { File } from 'lucide-react';
-import { useGetFiles } from './queries';
-import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
+
 import { LoaderCircle } from '@/components/shared/loader';
 import { excludeFileByName } from '@/lib/utils';
-dayjs.extend(utc);
+import { formatDate } from '@/lib/date';
+
+import { useGetFiles } from '../_hooks/use-get-files';
 
 export const FileList = () => {
   const { data, isLoading } = useGetFiles();
@@ -27,10 +27,7 @@ export const FileList = () => {
             <div>
               <h1 className="text-sm font-semibold">{file}</h1>
               <p className="text-sm text-muted-foreground">
-                {dayjs
-                  .utc(timestamp)
-                  .add(7, 'hour')
-                  .format('ddd, DD MMM YYYY HH:mm')}
+                {formatDate(timestamp)}
               </p>
             </div>
           </div>

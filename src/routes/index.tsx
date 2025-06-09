@@ -4,12 +4,14 @@ import { Navigate, Outlet, useRoutes } from 'react-router-dom';
 import PublicRoute from './public-route';
 import ProtectedRoute from './protected-route';
 
+import GeneralFile from '@/pages/files/general';
+import DivisionFile from '@/pages/files/division';
+
 const SignInPage = lazy(() => import('@/pages/auth/signin'));
 
 const MainLayout = lazy(() => import('@/components/layout/main-layout'));
 
 const ChatPage = lazy(() => import('@/pages/chat'));
-const UploadFilePage = lazy(() => import('@/pages/upload-file'));
 const EnhancePage = lazy(() => import('@/pages/enhance'));
 
 const ThankyouPage = lazy(() => import('@/pages/thankyou'));
@@ -36,8 +38,12 @@ export default function AppRouter() {
           element: <ChatPage />
         },
         {
-          path: '/files',
-          element: <UploadFilePage />
+          path: '/files/general',
+          element: <GeneralFile />
+        },
+        {
+          path: '/files/division',
+          element: <DivisionFile />
         },
         {
           path: '/enhance',
@@ -65,11 +71,11 @@ export default function AppRouter() {
     {
       path: '/404',
       element: <NotFound />
-    },
-    {
-      path: '*',
-      element: <Navigate to="/404" replace />
     }
+    // {
+    //   path: '*',
+    //   element: <Navigate to="/404" replace />
+    // }
   ];
 
   const routes = useRoutes([...dashboardRoutes, ...publicRoutes]);

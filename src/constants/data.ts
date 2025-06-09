@@ -17,8 +17,14 @@ export const adminItems: NavItem[] = [
     label: 'Chat'
   },
   {
-    title: 'Files',
-    href: '/files',
+    title: 'General Files',
+    href: '/files/general',
+    icon: 'post',
+    label: 'Files'
+  },
+  {
+    title: 'Devision Files',
+    href: '/files/division',
     icon: 'post',
     label: 'Files'
   },
