@@ -76,3 +76,11 @@
     font-family: 'Open Sans', sans-serif;
   }
 }
+
+.text-gradient-primary {
+  @apply bg-gradient-to-r from-[#1e132b] to-[#a03bbb] bg-clip-text text-transparent;
+}
+
+.text-gradient-light {
+  @apply bg-gradient-to-r from-[#050506] via-[#B04B9C] to-[#5C47DB] bg-clip-text text-transparent;
+}

@@ -10,6 +10,7 @@ import DivisionFile from '@/pages/files/division';
 const SignInPage = lazy(() => import('@/pages/auth/signin'));
 
 const MainLayout = lazy(() => import('@/components/layout/main-layout'));
+const NewMainLayout = lazy(() => import('@/components/layout/new-main-layout'));
 
 const ChatPage = lazy(() => import('@/pages/chat'));
 const EnhancePage = lazy(() => import('@/pages/enhance'));
@@ -20,7 +21,7 @@ const ThankyouPage = lazy(() => import('@/pages/thankyou'));
 export default function AppRouter() {
   const dashboardRoutes = [
     {
-      path: '/',
+      path: '/old',
       element: (
         <ProtectedRoute>
           <MainLayout>
@@ -31,23 +32,41 @@ export default function AppRouter() {
       children: [
         {
           index: true,
-          element: <Navigate to="/chat" replace />
+          element: <Navigate to="/old/chat" replace />
         },
         {
-          path: '/chat',
+          path: '/old/chat',
           element: <ChatPage />
         },
         {
-          path: '/files/general',
+          path: '/old/files/general',
           element: <GeneralFile />
         },
         {
-          path: '/files/division',
+          path: '/old/files/division',
           element: <DivisionFile />
         },
         {
-          path: '/enhance',
+          path: '/old/enhance',
           element: <EnhancePage />
+        }
+      ]
+    },
+    {
+      path: '/new',
+      element: (
+        <ProtectedRoute>
+          <NewMainLayout />
+        </ProtectedRoute>
+      ),
+      children: [
+        {
+          index: true,
+          element: <Navigate to="/new/chat" replace />
+        },
+        {
+          path: '/new/chat',
+          element: <ChatPage />
         }
       ]
     }
