@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom';
 
 const MainContent = () => {
   return (
-    <main className="flex flex-1 flex-col p-6 text-gray-800">
+    <main className="flex h-full flex-1 flex-col overflow-y-auto p-6">
       <header className="mb-10 flex items-center justify-between">
         <img src="/icons/logo.png" className="h-6" />
         <div className="flex cursor-pointer items-center rounded-full border border-gray-200 bg-white p-1 hover:shadow-sm">

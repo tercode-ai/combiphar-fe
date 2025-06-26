@@ -6,7 +6,8 @@ import ProtectedRoute from './protected-route';
 
 import GeneralFile from '@/pages/old/files/general';
 import DivisionFile from '@/pages/old/files/division';
-import ChatPage from '@/pages/new/chats/page';
+import ChatPage from '@/pages/new/chat/page';
+import FilesPage from '@/pages/new/files/page';
 
 const SignInPage = lazy(() => import('@/pages/auth/signin'));
 
@@ -67,8 +68,12 @@ export default function AppRouter() {
           element: <Navigate to="/new/chats" replace />
         },
         {
-          path: '/new/chats',
+          path: '/new/chat',
           element: <ChatPage />
+        },
+        {
+          path: '/new/files',
+          element: <FilesPage />
         }
       ]
     }
