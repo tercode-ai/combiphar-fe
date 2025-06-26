@@ -6,16 +6,18 @@ import ProtectedRoute from './protected-route';
 
 import GeneralFile from '@/pages/old/files/general';
 import DivisionFile from '@/pages/old/files/division';
+import ChatPage from '@/pages/new/chats/page';
 
 const SignInPage = lazy(() => import('@/pages/auth/signin'));
 
 const MainLayout = lazy(() => import('@/components/layout/main-layout'));
 const NewMainLayout = lazy(() => import('@/components/layout/new-main-layout'));
 
-const ChatPage = lazy(() => import('@/pages/old/chat'));
+const OldChatPage = lazy(() => import('@/pages/old/chat'));
 const EnhancePage = lazy(() => import('@/pages/old/enhance'));
 
 const ThankyouPage = lazy(() => import('@/pages/old/thankyou'));
+
 // ----------------------------------------------------------------------
 
 export default function AppRouter() {
@@ -36,7 +38,7 @@ export default function AppRouter() {
         },
         {
           path: '/old/chat',
-          element: <ChatPage />
+          element: <OldChatPage />
         },
         {
           path: '/old/files/general',
@@ -62,10 +64,10 @@ export default function AppRouter() {
       children: [
         {
           index: true,
-          element: <Navigate to="/new/chat" replace />
+          element: <Navigate to="/new/chats" replace />
         },
         {
-          path: '/new/chat',
+          path: '/new/chats',
           element: <ChatPage />
         }
       ]
