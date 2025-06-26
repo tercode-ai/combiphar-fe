@@ -1,21 +1,21 @@
-import NotFound from '@/pages/not-found';
+import NotFound from '@/pages/old/not-found';
 import { lazy } from 'react';
 import { Navigate, Outlet, useRoutes } from 'react-router-dom';
 import PublicRoute from './public-route';
 import ProtectedRoute from './protected-route';
 
-import GeneralFile from '@/pages/files/general';
-import DivisionFile from '@/pages/files/division';
+import GeneralFile from '@/pages/old/files/general';
+import DivisionFile from '@/pages/old/files/division';
 
 const SignInPage = lazy(() => import('@/pages/auth/signin'));
 
 const MainLayout = lazy(() => import('@/components/layout/main-layout'));
 const NewMainLayout = lazy(() => import('@/components/layout/new-main-layout'));
 
-const ChatPage = lazy(() => import('@/pages/chat'));
-const EnhancePage = lazy(() => import('@/pages/enhance'));
+const ChatPage = lazy(() => import('@/pages/old/chat'));
+const EnhancePage = lazy(() => import('@/pages/old/enhance'));
 
-const ThankyouPage = lazy(() => import('@/pages/thankyou'));
+const ThankyouPage = lazy(() => import('@/pages/old/thankyou'));
 // ----------------------------------------------------------------------
 
 export default function AppRouter() {
