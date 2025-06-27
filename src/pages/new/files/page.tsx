@@ -17,102 +17,106 @@ import {
   MagnifyingGlassIcon
 } from '@radix-ui/react-icons';
 import { useState } from 'react';
+import FormModal from './_components/form-modal';
+
+const tableData = [
+  {
+    id: 1,
+    fileId: '1122334455',
+    documentName: 'aab-ccdd-eeff-gghh',
+    documentType: 'PDF',
+    description: 'lorem ipsum dolor sit amet',
+    dateCreate: '08-06-2025 08:24',
+    dateUpdate: '08-06-2025 09:10'
+  },
+  {
+    id: 2,
+    fileId: '1122334455',
+    documentName: 'aab-ccdd-eeff-gghh',
+    documentType: 'DOCX',
+    description: 'lorem ipsum dolor sit amet',
+    dateCreate: '08-06-2025 08:24',
+    dateUpdate: '08-06-2025 09:10'
+  },
+  {
+    id: 3,
+    fileId: '1122334455',
+    documentName: 'aab-ccdd-eeff-gghh',
+    documentType: 'PDF',
+    description: 'lorem ipsum dolor sit amet',
+    dateCreate: '08-06-2025 08:24',
+    dateUpdate: '08-06-2025 09:10'
+  },
+  {
+    id: 4,
+    fileId: '1122334455',
+    documentName: 'aab-ccdd-eeff-gghh',
+    documentType: 'DOCX',
+    description: 'lorem ipsum dolor sit amet',
+    dateCreate: '08-06-2025 08:24',
+    dateUpdate: '08-06-2025 09:10'
+  },
+  {
+    id: 5,
+    fileId: '1122334455',
+    documentName: 'aab-ccdd-eeff-gghh',
+    documentType: 'PDF',
+    description: 'lorem ipsum dolor sit amet',
+    dateCreate: '08-06-2025 08:24',
+    dateUpdate: '08-06-2025 09:10'
+  },
+  {
+    id: 6,
+    fileId: '1122334455',
+    documentName: 'aab-ccdd-eeff-gghh',
+    documentType: 'DOCX',
+    description: 'lorem ipsum dolor sit amet',
+    dateCreate: '08-06-2025 08:24',
+    dateUpdate: '08-06-2025 09:10'
+  },
+  {
+    id: 7,
+    fileId: '1122334455',
+    documentName: 'aab-ccdd-eeff-gghh',
+    documentType: 'DOCX',
+    description: 'lorem ipsum dolor sit amet',
+    dateCreate: '08-06-2025 08:24',
+    dateUpdate: '08-06-2025 09:10'
+  },
+  {
+    id: 8,
+    fileId: '1122334455',
+    documentName: 'aab-ccdd-eeff-gghh',
+    documentType: 'PDF',
+    description: 'lorem ipsum dolor sit amet',
+    dateCreate: '08-06-2025 08:24',
+    dateUpdate: '08-06-2025 09:10'
+  },
+  {
+    id: 9,
+    fileId: '1122334455',
+    documentName: 'aab-ccdd-eeff-gghh',
+    documentType: 'DOCX',
+    description: 'lorem ipsum dolor sit amet',
+    dateCreate: '08-06-2025 08:24',
+    dateUpdate: '08-06-2025 09:10'
+  },
+  {
+    id: 10,
+    fileId: '1122334455',
+    documentName: 'aab-ccdd-eeff-gghh',
+    documentType: 'PDF',
+    description: 'lorem ipsum dolor sit amet',
+    dateCreate: '08-06-2025 08:24',
+    dateUpdate: '08-06-2025 09:10'
+  }
+];
 
 const FilesPage = () => {
-  const tableData = [
-    {
-      id: 1,
-      fileId: '1122334455',
-      documentName: 'aab-ccdd-eeff-gghh',
-      documentType: 'PDF',
-      description: 'lorem ipsum dolor sit amet',
-      dateCreate: '08-06-2025 08:24',
-      dateUpdate: '08-06-2025 09:10'
-    },
-    {
-      id: 2,
-      fileId: '1122334455',
-      documentName: 'aab-ccdd-eeff-gghh',
-      documentType: 'DOCX',
-      description: 'lorem ipsum dolor sit amet',
-      dateCreate: '08-06-2025 08:24',
-      dateUpdate: '08-06-2025 09:10'
-    },
-    {
-      id: 3,
-      fileId: '1122334455',
-      documentName: 'aab-ccdd-eeff-gghh',
-      documentType: 'PDF',
-      description: 'lorem ipsum dolor sit amet',
-      dateCreate: '08-06-2025 08:24',
-      dateUpdate: '08-06-2025 09:10'
-    },
-    {
-      id: 4,
-      fileId: '1122334455',
-      documentName: 'aab-ccdd-eeff-gghh',
-      documentType: 'DOCX',
-      description: 'lorem ipsum dolor sit amet',
-      dateCreate: '08-06-2025 08:24',
-      dateUpdate: '08-06-2025 09:10'
-    },
-    {
-      id: 5,
-      fileId: '1122334455',
-      documentName: 'aab-ccdd-eeff-gghh',
-      documentType: 'PDF',
-      description: 'lorem ipsum dolor sit amet',
-      dateCreate: '08-06-2025 08:24',
-      dateUpdate: '08-06-2025 09:10'
-    },
-    {
-      id: 6,
-      fileId: '1122334455',
-      documentName: 'aab-ccdd-eeff-gghh',
-      documentType: 'DOCX',
-      description: 'lorem ipsum dolor sit amet',
-      dateCreate: '08-06-2025 08:24',
-      dateUpdate: '08-06-2025 09:10'
-    },
-    {
-      id: 7,
-      fileId: '1122334455',
-      documentName: 'aab-ccdd-eeff-gghh',
-      documentType: 'DOCX',
-      description: 'lorem ipsum dolor sit amet',
-      dateCreate: '08-06-2025 08:24',
-      dateUpdate: '08-06-2025 09:10'
-    },
-    {
-      id: 8,
-      fileId: '1122334455',
-      documentName: 'aab-ccdd-eeff-gghh',
-      documentType: 'PDF',
-      description: 'lorem ipsum dolor sit amet',
-      dateCreate: '08-06-2025 08:24',
-      dateUpdate: '08-06-2025 09:10'
-    },
-    {
-      id: 9,
-      fileId: '1122334455',
-      documentName: 'aab-ccdd-eeff-gghh',
-      documentType: 'DOCX',
-      description: 'lorem ipsum dolor sit amet',
-      dateCreate: '08-06-2025 08:24',
-      dateUpdate: '08-06-2025 09:10'
-    },
-    {
-      id: 10,
-      fileId: '1122334455',
-      documentName: 'aab-ccdd-eeff-gghh',
-      documentType: 'PDF',
-      description: 'lorem ipsum dolor sit amet',
-      dateCreate: '08-06-2025 08:24',
-      dateUpdate: '08-06-2025 09:10'
-    }
-  ];
+  const [modal, setModal] = useState<'edit' | 'create' | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const totalEntries = 100; // Contoh total entri
+
   return (
     <div>
       <div className="mb-8 flex items-center justify-between">
@@ -145,7 +149,10 @@ const FilesPage = () => {
           </DropdownMenu>
         </div>
 
-        <Button className="bg-green-500 hover:bg-green-600">
+        <Button
+          className="bg-green-500 hover:bg-green-600"
+          onClick={() => setModal('create')}
+        >
           Add New File
         </Button>
       </div>
@@ -202,7 +209,10 @@ const FilesPage = () => {
                   <button className="text-xs font-semibold text-gray-600 hover:text-gray-800">
                     View
                   </button>
-                  <button className="text-xs font-semibold text-gray-600 hover:text-gray-800">
+                  <button
+                    onClick={() => setModal('edit')}
+                    className="text-xs font-semibold text-gray-600 hover:text-gray-800"
+                  >
                     Edit
                   </button>
                   <button className="text-xs font-semibold text-gray-600 hover:text-gray-800">
@@ -245,6 +255,21 @@ const FilesPage = () => {
           </div>
         </div>
       </div>
+
+      <FormModal
+        open={modal === 'create'}
+        mode="create"
+        onOpenChange={() => setModal(null)}
+      />
+      <FormModal
+        open={modal === 'edit'}
+        mode="edit"
+        onOpenChange={() => setModal(null)}
+        defaultValues={{
+          document_name: 'Aturan Karyawan',
+          description: 'Dokumen yang berisi aturan-aturan karyawan'
+        }}
+      />
     </div>
   );
 };
