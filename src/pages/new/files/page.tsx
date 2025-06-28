@@ -18,6 +18,8 @@ import {
 } from '@radix-ui/react-icons';
 import { useState } from 'react';
 import FormModal from './_components/form-modal';
+import DetailModal from './_components/detail-modal';
+import DeleteModal from './_components/delete-modal';
 
 const tableData = [
   {
@@ -113,7 +115,9 @@ const tableData = [
 ];
 
 const FilesPage = () => {
-  const [modal, setModal] = useState<'edit' | 'create' | null>(null);
+  const [modal, setModal] = useState<
+    'delete' | 'edit' | 'create' | 'detail' | null
+  >(null);
   const [currentPage, setCurrentPage] = useState(1);
   const totalEntries = 100; // Contoh total entri
 
@@ -206,7 +210,10 @@ const FilesPage = () => {
                   {row.dateUpdate}
                 </div>
                 <div className="flex w-[10%] flex-shrink-0 justify-center space-x-2">
-                  <button className="text-xs font-semibold text-gray-600 hover:text-gray-800">
+                  <button
+                    className="text-xs font-semibold text-gray-600 hover:text-gray-800"
+                    onClick={() => setModal('detail')}
+                  >
                     View
                   </button>
                   <button
@@ -215,7 +222,10 @@ const FilesPage = () => {
                   >
                     Edit
                   </button>
-                  <button className="text-xs font-semibold text-gray-600 hover:text-gray-800">
+                  <button
+                    onClick={() => setModal('delete')}
+                    className="text-xs font-semibold text-gray-600 hover:text-gray-800"
+                  >
                     Delete
                   </button>
                 </div>
@@ -269,6 +279,30 @@ const FilesPage = () => {
           document_name: 'Aturan Karyawan',
           description: 'Dokumen yang berisi aturan-aturan karyawan'
         }}
+      />
+
+      <DetailModal
+        open={modal === 'detail'}
+        onOpenChange={() => setModal(null)}
+        data={{
+          document_link: 'https://github.com/oemahsolution/dashboard-llm',
+          document_name: 'Undang-undang karyawan',
+          description:
+            'Berisi aturan-aturan yang harus diikuti oleh karyawan, alur-alur peminjaman barang, informasi gaji, dll.',
+          created_at: '2025-06-27 15:30 PM',
+          updated_at: '2025-06-27 15:30 PM'
+        }}
+        onDelete={() => {}}
+        onEdit={() => {
+          setModal('edit');
+        }}
+      />
+
+      <DeleteModal
+        open={modal === 'delete'}
+        data={{ document_name: 'Undang-undang Karyawan' }}
+        onDelete={() => setModal(null)}
+        onOpenChange={() => setModal(null)}
       />
     </div>
   );

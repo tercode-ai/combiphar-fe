@@ -8,6 +8,7 @@ import GeneralFile from '@/pages/old/files/general';
 import DivisionFile from '@/pages/old/files/division';
 import ChatPage from '@/pages/new/chat/page';
 import FilesPage from '@/pages/new/files/page';
+import DetailPage from '@/pages/new/chat/detail/page';
 
 const SignInPage = lazy(() => import('@/pages/auth/signin'));
 
@@ -65,11 +66,15 @@ export default function AppRouter() {
       children: [
         {
           index: true,
-          element: <Navigate to="/new/chats" replace />
+          element: <Navigate to="/new/chat" replace />
         },
         {
           path: '/new/chat',
           element: <ChatPage />
+        },
+        {
+          path: '/new/chat/:chatId',
+          element: <DetailPage />
         },
         {
           path: '/new/files',

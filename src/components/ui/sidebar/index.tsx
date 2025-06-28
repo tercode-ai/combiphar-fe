@@ -7,17 +7,52 @@ import {
 } from '@radix-ui/react-icons';
 import { Link } from 'react-router-dom';
 
-const recentChats = [
-  'What is AI',
-  '2D Animation Pet Nap',
-  'DALL-E Image Generation',
-  'Crate 3D Icon',
-  'Simple Cashier in Go',
-  'Yahoo Conversation',
-  'Summarize My Request',
-  'Random Request Response',
-  'Road Trip Playlist Ideas',
-  'Analisis Timnas Indonesia'
+type TRecentChats = {
+  id: string;
+  title: string;
+};
+
+const recentChats: TRecentChats[] = [
+  {
+    id: 'lkadlkajsdf',
+    title: 'What is AI'
+  },
+  {
+    id: 'randomId-1',
+    title: '2D Animation Pet Nap'
+  },
+  {
+    id: 'randomId-2',
+    title: 'DALL-E Image Generation'
+  },
+  {
+    id: 'randomId-3',
+    title: 'Crate 3D Icon'
+  },
+  {
+    id: 'randomId-4',
+    title: 'Simple Cashier in Go'
+  },
+  {
+    id: 'randomId-5',
+    title: 'Yahoo Conversation'
+  },
+  {
+    id: 'randomId-6',
+    title: 'Summarize My Request'
+  },
+  {
+    id: 'randomId-7',
+    title: 'Random Request Response'
+  },
+  {
+    id: 'randomId-8',
+    title: 'Road Trip Playlist Ideas'
+  },
+  {
+    id: 'randomId-9',
+    title: 'Analisis Timnas Indonesia'
+  }
 ];
 
 const Sidebar = () => {
@@ -51,17 +86,17 @@ const Sidebar = () => {
         </h2>
         <nav>
           <ul>
-            {recentChats.map((chat, index) => (
-              <li key={index}>
-                <a
-                  href="#"
+            {recentChats.map((chat) => (
+              <li key={chat.id}>
+                <Link
+                  to={`/new/chat/${chat.id}`}
                   className="flex items-center justify-between rounded-lg p-2 text-sm text-gray-700 hover:bg-gray-400/20"
                 >
-                  <span className="truncate font-semibold">{chat}</span>
+                  <span className="truncate font-semibold">{chat.title}</span>
                   <div className="rounded-sm bg-[#C4C4C4] p-[2px] text-gray-900">
                     <ArrowTopRightIcon className="h-4" />
                   </div>
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
