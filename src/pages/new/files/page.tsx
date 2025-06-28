@@ -19,6 +19,7 @@ import {
 import { useState } from 'react';
 import FormModal from './_components/form-modal';
 import DetailModal from './_components/detail-modal';
+import DeleteModal from './_components/delete-modal';
 
 const tableData = [
   {
@@ -114,7 +115,9 @@ const tableData = [
 ];
 
 const FilesPage = () => {
-  const [modal, setModal] = useState<'edit' | 'create' | 'detail' | null>(null);
+  const [modal, setModal] = useState<
+    'delete' | 'edit' | 'create' | 'detail' | null
+  >(null);
   const [currentPage, setCurrentPage] = useState(1);
   const totalEntries = 100; // Contoh total entri
 
@@ -219,7 +222,10 @@ const FilesPage = () => {
                   >
                     Edit
                   </button>
-                  <button className="text-xs font-semibold text-gray-600 hover:text-gray-800">
+                  <button
+                    onClick={() => setModal('delete')}
+                    className="text-xs font-semibold text-gray-600 hover:text-gray-800"
+                  >
                     Delete
                   </button>
                 </div>
@@ -290,6 +296,13 @@ const FilesPage = () => {
         onEdit={() => {
           setModal('edit');
         }}
+      />
+
+      <DeleteModal
+        open={modal === 'delete'}
+        data={{ document_name: 'Undang-undang Karyawan' }}
+        onDelete={() => setModal(null)}
+        onOpenChange={() => setModal(null)}
       />
     </div>
   );
