@@ -6,56 +6,19 @@ import {
   TimerIcon
 } from '@radix-ui/react-icons';
 import { Link } from 'react-router-dom';
+import { useGetFiles } from './_hook/use-get-history-chat';
 
 type TRecentChats = {
   id: string;
   title: string;
 };
 
-const recentChats: TRecentChats[] = [
-  {
-    id: 'lkadlkajsdf',
-    title: 'What is AI'
-  },
-  {
-    id: 'randomId-1',
-    title: '2D Animation Pet Nap'
-  },
-  {
-    id: 'randomId-2',
-    title: 'DALL-E Image Generation'
-  },
-  {
-    id: 'randomId-3',
-    title: 'Crate 3D Icon'
-  },
-  {
-    id: 'randomId-4',
-    title: 'Simple Cashier in Go'
-  },
-  {
-    id: 'randomId-5',
-    title: 'Yahoo Conversation'
-  },
-  {
-    id: 'randomId-6',
-    title: 'Summarize My Request'
-  },
-  {
-    id: 'randomId-7',
-    title: 'Random Request Response'
-  },
-  {
-    id: 'randomId-8',
-    title: 'Road Trip Playlist Ideas'
-  },
-  {
-    id: 'randomId-9',
-    title: 'Analisis Timnas Indonesia'
-  }
-];
-
 const Sidebar = () => {
+  const query = useGetFiles({
+    session_id: '123e4567-e89b-12d3-a456-426614174000'
+  });
+  const dataResult = Array.isArray(query.data?.data) ? query.data?.data : [];
+
   return (
     <aside className="flex w-[296px] flex-col gap-2 bg-[#D2D2D2] p-6">
       <button className="flex h-8 w-8 items-center justify-center rounded-lg hover:bg-gray-400/20">
@@ -86,13 +49,13 @@ const Sidebar = () => {
         </h2>
         <nav>
           <ul>
-            {recentChats.map((chat) => (
-              <li key={chat.id}>
+            {dataResult.map((chat: TRecentChats, index) => (
+              <li key={index}>
                 <Link
-                  to={`/new/chat/${chat.id}`}
+                  to={`/new/chat/${chat[0]}`}
                   className="flex items-center justify-between rounded-lg p-2 text-sm text-gray-700 hover:bg-gray-400/20"
                 >
-                  <span className="truncate font-semibold">{chat.title}</span>
+                  <span className="truncate font-semibold">{chat?.[2]}</span>
                   <div className="rounded-sm bg-[#C4C4C4] p-[2px] text-gray-900">
                     <ArrowTopRightIcon className="h-4" />
                   </div>
