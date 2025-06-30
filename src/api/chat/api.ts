@@ -4,7 +4,7 @@ import { TChatRequest, TClearChatRequest, TGetHistoryRequest } from './type';
 
 import { TDefaultResponse } from '../../commons/types/response';
 
-export const Chat = async (req: TChatRequest): Promise<TDefaultResponse> => {
+export const chat = async (req: TChatRequest): Promise<TDefaultResponse> => {
   const res = await api.post<TDefaultResponse>('/ask', req);
   return res.data;
 };

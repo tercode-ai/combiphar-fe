@@ -5,6 +5,7 @@ export type TResponse<T> = {
   code: number;
   message: string | null;
   status: boolean | null;
+  isLoading: boolean | null;
   result: T;
 };
 

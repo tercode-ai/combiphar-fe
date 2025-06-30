@@ -8,6 +8,8 @@ import {
   PlusCircledIcon,
   ReloadIcon
 } from '@radix-ui/react-icons';
+import { SetStateAction, useState } from 'react';
+import useCreateChat from './_hook/use-create-facilities';
 
 const ChatPage = () => {
   const promptSuggestions = [
@@ -29,36 +31,85 @@ const ChatPage = () => {
     }
   ];
 
+  const [text, setText] = useState('');
+  type ChatResult = {
+    result?: {
+      answer?: string;
+      source_documents?: string[];
+    };
+  };
+
+  const [chat, setChat] = useState<ChatResult | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  console.log('CEK CHAT', chat?.result);
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setText(e.target.value);
+  };
+
+  const mutation = useCreateChat();
+  console.log('CEK CEK', mutation);
+  const payload = {
+    question: text,
+    session_id: '123e4567-e89b-12d3-a456-426614174000'
+  };
+
+  const handleClickItem = (item: SetStateAction<string>) => {
+    setText(item);
+  };
+  const handleClick = () => {
+    if (!text.trim()) return;
+    setChat({});
+    setLoading(true);
+    mutation.mutate(payload, {
+      onSuccess: (data) => {
+        setChat({
+          result: data?.result ?? undefined
+        });
+      },
+      onError: () => {}
+    });
+    setLoading(false);
+  };
+
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col items-center justify-center text-left">
-      <div className="mx-auto max-w-4xl">
-        <h2 className="text-gradient-light text-4xl font-bold">
-          Hi there, Marvin
-        </h2>
-        <h3 className="text-gradient-light mt-2 text-4xl font-bold">
-          What would you like to know?
-        </h3>
-        <p className="mt-6 text-gray-500">
-          Use one of the most common prompts below or use your own to begin
-        </p>
+      {chat && !loading ? (
+        <>{chat?.result?.answer}</>
+      ) : loading ? (
+        <>LODING.....</>
+      ) : (
+        <div className="mx-auto max-w-4xl">
+          <h2 className="text-gradient-light text-4xl font-bold">
+            Hi there, Marvin
+          </h2>
+          <h3 className="text-gradient-light mt-2 text-4xl font-bold">
+            What would you like to know?
+          </h3>
+          <p className="mt-6 text-gray-500">
+            Use one of the most common prompts below or use your own to begin
+          </p>
 
-        <div className="mt-8 grid grid-cols-1 gap-4 text-left md:grid-cols-4">
-          {promptSuggestions.map((prompt, index) => (
-            <div
-              key={index}
-              className="flex min-h-32 cursor-pointer flex-col items-start rounded-lg border border-gray-200 p-4 hover:bg-gray-50"
-            >
-              <p className="flex-1 text-sm text-gray-700">{prompt.text}</p>
-              {prompt.icon}
-            </div>
-          ))}
+          <div className="mt-8 grid grid-cols-1 gap-4 text-left md:grid-cols-4">
+            {promptSuggestions.map((prompt, index) => (
+              <div
+                key={index}
+                onClick={() => handleClickItem(prompt.text)}
+                className="flex min-h-32 cursor-pointer flex-col items-start rounded-lg border border-gray-200 p-4 hover:bg-gray-50"
+              >
+                <p className="flex-1 text-sm text-gray-700">{prompt.text}</p>
+                {prompt.icon}
+              </div>
+            ))}
+          </div>
+
+          <button className="mt-6 flex text-sm text-gray-600 hover:text-gray-900">
+            <ReloadIcon className="mr-2" />
+            Refresh prompts
+          </button>
         </div>
-
-        <button className="mt-6 flex text-sm text-gray-600 hover:text-gray-900">
-          <ReloadIcon className="mr-2" />
-          Refresh prompts
-        </button>
-      </div>
+      )}
 
       <div className="mt-16 w-full rounded-xl border border-gray-300 bg-white p-4">
         <textarea
@@ -66,6 +117,8 @@ const ChatPage = () => {
           rows={4}
           placeholder="Ask CombipharGPT whatever you want....."
           maxLength={1000}
+          value={text}
+          onChange={handleChange}
         />
 
         <div className="mt-4 flex items-center justify-between text-sm text-gray-800">
@@ -79,8 +132,11 @@ const ChatPage = () => {
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="text-sm text-gray-900">0/1000</span>
-            <button className="flex h-8 w-8 items-center justify-center rounded-md bg-[#7051f8] text-white transition hover:bg-[#5b3de4]">
+            <span className="text-sm text-gray-900">{text.length}/1000</span>
+            <button
+              className="flex h-8 w-8 items-center justify-center rounded-md bg-[#7051f8] text-white transition hover:bg-[#5b3de4]"
+              onClick={handleClick}
+            >
               <ArrowRightIcon />
             </button>
           </div>
