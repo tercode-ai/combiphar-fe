@@ -1,6 +1,6 @@
 import api from '@/lib/api';
 import { TCreateRequest, TDeleteRequest, TUpdateRequest } from './type';
-import { TDefaultResponse } from '../../commons/types/response';
+import { TDefaultResponse } from '@/commons/types/response';
 
 export const getEnhance = async (): Promise<TDefaultResponse> => {
   const res = await api.get<TDefaultResponse>('/enhance');

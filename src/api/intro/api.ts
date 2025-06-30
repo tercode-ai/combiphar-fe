@@ -1,27 +1,27 @@
 import api from '@/lib/api';
 import { TCreateRequest, TDeleteRequest, TUpdateRequest } from './type';
-import { TDefaultResponse } from '../../commons/types/response';
+import { TDefaultResponse } from '@/commons/types/response';
 
 export const getIntro = async (): Promise<TDefaultResponse> => {
   const res = await api.get<TDefaultResponse>('/intro');
   return res.data;
 };
 
-export const createEnhance = async (
+export const createIntro = async (
   req: TCreateRequest
 ): Promise<TDefaultResponse> => {
   const res = await api.post<TDefaultResponse>('/intro-create', req);
   return res.data;
 };
 
-export const deleteEnhance = async (
+export const deleteIntro = async (
   req: TDeleteRequest
 ): Promise<TDefaultResponse> => {
   const res = await api.post<TDefaultResponse>('/intro-delete', req);
   return res.data;
 };
 
-export const updateEnhance = async (
+export const updateIntro = async (
   req: TUpdateRequest
 ): Promise<TDefaultResponse> => {
   const res = await api.post<TDefaultResponse>('/intro-update', req);

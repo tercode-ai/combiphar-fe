@@ -1,6 +1,6 @@
 import api from '@/lib/api';
 import { TUploadURLRequest } from './type';
-import { TDefaultResponse } from '../../commons/types/response';
+import { TDefaultResponse } from '@/commons/types/response';
 
 export const deleteAllDocs = async (): Promise<TDefaultResponse> => {
   const res = await api.get<TDefaultResponse>('/delete_all');

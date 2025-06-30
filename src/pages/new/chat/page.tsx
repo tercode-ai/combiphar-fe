@@ -9,7 +9,7 @@ import {
   ReloadIcon
 } from '@radix-ui/react-icons';
 import { SetStateAction, useState } from 'react';
-import useCreateChat from './_hook/use-create-facilities';
+import useCreateChat from './_hook/use-create-chat';
 
 const ChatPage = () => {
   const promptSuggestions = [
