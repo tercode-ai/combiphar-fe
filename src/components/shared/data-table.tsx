@@ -16,10 +16,6 @@ import {
   TableRow
 } from '@/components/ui/table';
 import {
-  DoubleArrowLeftIcon,
-  DoubleArrowRightIcon
-} from '@radix-ui/react-icons';
-import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
@@ -92,12 +88,12 @@ export function DataTable<TData, TValue>({
     <>
       <ScrollArea className="rounded-md border">
         <Table className="relative">
-          <TableHeader>
+          <TableHeader className="bg-[#5C47DB]">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead key={header.id} className="uppercase text-white">
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -110,7 +106,8 @@ export function DataTable<TData, TValue>({
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody>
+          <TableBody className=" bg-white">
+            <tr className="h-2" />
             {loading ? (
               <TableRow>
                 <TableCell colSpan={columns.length} className="text-center">
@@ -148,54 +145,31 @@ export function DataTable<TData, TValue>({
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
 
-      <div className="flex flex-col items-center justify-end gap-2 space-x-2 py-4 sm:flex-row">
-        <div className="flex w-full items-center justify-between">
-          {/* <div className="flex-1 text-sm text-muted-foreground">
-            {table.getFilteredSelectedRowModel().rows.length} of{' '}
-            {table.getFilteredRowModel().rows.length} row(s) selected.
-          </div> */}
-          <div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-6 lg:gap-8">
-            <div className="flex items-center space-x-2">
-              {/* <p className="whitespace-nowrap text-sm font-medium">
-                Rows per page
-              </p> */}
-              <Select
-                value={`${table.getState().pagination.pageSize}`}
-                onValueChange={(value: string) => {
-                  table.setPageSize(Number(value));
-                }}
-              >
-                <SelectTrigger className="h-8 w-[70px]">
-                  <SelectValue
-                    placeholder={table.getState().pagination.pageSize}
-                  />
-                </SelectTrigger>
-                <SelectContent side="top">
-                  {pageSizeOptions.map((pageSize) => (
-                    <SelectItem key={pageSize} value={`${pageSize}`}>
-                      {pageSize}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
+      <div className="mt-4 flex items-center justify-between rounded-lg bg-[#F8F8F8] px-4 py-3">
+        <div className="text-sm ">
+          Showing {table.getState().pagination.pageIndex + 1} to{' '}
+          {table.getPageCount()} of {table.getRowCount()} entries
         </div>
-        <div className="flex w-full items-center justify-between gap-2 sm:justify-end">
-          <div className="flex w-[100px] items-center justify-center text-sm font-medium">
-            Page {table.getState().pagination.pageIndex + 1} of{' '}
-            {table.getPageCount()}
-          </div>
-          <div className="flex items-center space-x-2">
-            <Button
-              aria-label="Go to first page"
-              variant="outline"
-              className="hidden h-8 w-8 p-0 lg:flex"
-              onClick={() => table.setPageIndex(0)}
-              disabled={!table.getCanPreviousPage()}
-            >
-              <DoubleArrowLeftIcon className="h-4 w-4" aria-hidden="true" />
-            </Button>
+        <div className="flex items-center space-x-2">
+          <span className="text-sm">The page you're on</span>
+          <Select
+            value={`${table.getState().pagination.pageSize}`}
+            onValueChange={(value: string) => {
+              table.setPageSize(Number(value));
+            }}
+          >
+            <SelectTrigger className="h-8 w-[60px] bg-white">
+              <SelectValue placeholder={table.getState().pagination.pageSize} />
+            </SelectTrigger>
+            <SelectContent side="top">
+              {pageSizeOptions.map((pageSize) => (
+                <SelectItem key={pageSize} value={`${pageSize}`}>
+                  {pageSize}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <div className="flex gap-2">
             <Button
               aria-label="Go to previous page"
               variant="outline"
@@ -213,15 +187,6 @@ export function DataTable<TData, TValue>({
               disabled={!table.getCanNextPage()}
             >
               <ChevronRightIcon className="h-4 w-4" aria-hidden="true" />
-            </Button>
-            <Button
-              aria-label="Go to last page"
-              variant="outline"
-              className="hidden h-8 w-8 p-0 lg:flex"
-              onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-              disabled={!table.getCanNextPage()}
-            >
-              <DoubleArrowRightIcon className="h-4 w-4" aria-hidden="true" />
             </Button>
           </div>
         </div>

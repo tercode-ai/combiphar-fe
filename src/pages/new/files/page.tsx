@@ -3,114 +3,137 @@ import {
   DropdownMenu,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
-import {
-  ArrowLeftIcon,
-  ArrowRightIcon,
-  ChevronDownIcon,
-  MagnifyingGlassIcon
-} from '@radix-ui/react-icons';
+import { ChevronDownIcon, MagnifyingGlassIcon } from '@radix-ui/react-icons';
 import { useState } from 'react';
 import FormModal from './_components/form-modal';
 import DetailModal from './_components/detail-modal';
 import DeleteModal from './_components/delete-modal';
+import { ColumnDef } from '@tanstack/react-table';
+import { DataTable } from '@/components/shared/data-table';
+import { Badge } from '@/components/ui/badge';
 
-const tableData = [
+type TDocument = {
+  id: number;
+  fileId: string;
+  portalID: string;
+  documentName: string;
+  documentType: string;
+  description: string;
+  dateCreate: string;
+  dateUpdate: string;
+  metaData: string;
+};
+
+const data: TDocument[] = [
   {
     id: 1,
     fileId: '1122334455',
+    portalID: 'PORTAL-001',
     documentName: 'aab-ccdd-eeff-gghh',
     documentType: 'PDF',
     description: 'lorem ipsum dolor sit amet',
     dateCreate: '08-06-2025 08:24',
-    dateUpdate: '08-06-2025 09:10'
+    dateUpdate: '08-06-2025 09:10',
+    metaData: 'Meta Data Document'
   },
   {
     id: 2,
     fileId: '1122334455',
+    portalID: 'PORTAL-002',
     documentName: 'aab-ccdd-eeff-gghh',
-    documentType: 'DOCX',
+    documentType: 'PDF',
     description: 'lorem ipsum dolor sit amet',
     dateCreate: '08-06-2025 08:24',
-    dateUpdate: '08-06-2025 09:10'
+    dateUpdate: '08-06-2025 09:10',
+    metaData: 'Upload Document'
   },
   {
     id: 3,
     fileId: '1122334455',
+    portalID: 'PORTAL-003',
     documentName: 'aab-ccdd-eeff-gghh',
     documentType: 'PDF',
     description: 'lorem ipsum dolor sit amet',
     dateCreate: '08-06-2025 08:24',
-    dateUpdate: '08-06-2025 09:10'
+    dateUpdate: '08-06-2025 09:10',
+    metaData: 'Meta Data Document'
   },
   {
     id: 4,
     fileId: '1122334455',
+    portalID: 'PORTAL-004',
     documentName: 'aab-ccdd-eeff-gghh',
-    documentType: 'DOCX',
+    documentType: 'PDF',
     description: 'lorem ipsum dolor sit amet',
     dateCreate: '08-06-2025 08:24',
-    dateUpdate: '08-06-2025 09:10'
+    dateUpdate: '08-06-2025 09:10',
+    metaData: 'Upload Document'
   },
   {
     id: 5,
     fileId: '1122334455',
+    portalID: 'PORTAL-005',
     documentName: 'aab-ccdd-eeff-gghh',
     documentType: 'PDF',
     description: 'lorem ipsum dolor sit amet',
     dateCreate: '08-06-2025 08:24',
-    dateUpdate: '08-06-2025 09:10'
+    dateUpdate: '08-06-2025 09:10',
+    metaData: 'Meta Data Document'
   },
   {
     id: 6,
     fileId: '1122334455',
+    portalID: 'PORTAL-006',
     documentName: 'aab-ccdd-eeff-gghh',
-    documentType: 'DOCX',
+    documentType: 'PDF',
     description: 'lorem ipsum dolor sit amet',
     dateCreate: '08-06-2025 08:24',
-    dateUpdate: '08-06-2025 09:10'
+    dateUpdate: '08-06-2025 09:10',
+    metaData: 'Upload Document'
   },
   {
     id: 7,
     fileId: '1122334455',
+    portalID: 'PORTAL-007',
     documentName: 'aab-ccdd-eeff-gghh',
-    documentType: 'DOCX',
+    documentType: 'PDF',
     description: 'lorem ipsum dolor sit amet',
     dateCreate: '08-06-2025 08:24',
-    dateUpdate: '08-06-2025 09:10'
+    dateUpdate: '08-06-2025 09:10',
+    metaData: 'Meta Data Document'
   },
   {
     id: 8,
     fileId: '1122334455',
+    portalID: 'PORTAL-008',
     documentName: 'aab-ccdd-eeff-gghh',
     documentType: 'PDF',
     description: 'lorem ipsum dolor sit amet',
     dateCreate: '08-06-2025 08:24',
-    dateUpdate: '08-06-2025 09:10'
+    dateUpdate: '08-06-2025 09:10',
+    metaData: 'Upload Document'
   },
   {
     id: 9,
     fileId: '1122334455',
-    documentName: 'aab-ccdd-eeff-gghh',
-    documentType: 'DOCX',
-    description: 'lorem ipsum dolor sit amet',
-    dateCreate: '08-06-2025 08:24',
-    dateUpdate: '08-06-2025 09:10'
-  },
-  {
-    id: 10,
-    fileId: '1122334455',
+    portalID: 'PORTAL-009',
     documentName: 'aab-ccdd-eeff-gghh',
     documentType: 'PDF',
     description: 'lorem ipsum dolor sit amet',
     dateCreate: '08-06-2025 08:24',
-    dateUpdate: '08-06-2025 09:10'
+    dateUpdate: '08-06-2025 09:10',
+    metaData: 'Meta Data Document'
+  },
+  {
+    id: 10,
+    fileId: '1122334455',
+    portalID: 'PORTAL-010',
+    documentName: 'aab-ccdd-eeff-gghh',
+    documentType: 'PDF',
+    description: 'lorem ipsum dolor sit amet',
+    dateCreate: '08-06-2025 08:24',
+    dateUpdate: '08-06-2025 09:10',
+    metaData: 'Upload Document'
   }
 ];
 
@@ -118,8 +141,86 @@ const FilesPage = () => {
   const [modal, setModal] = useState<
     'delete' | 'edit' | 'create' | 'detail' | null
   >(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const totalEntries = 100; // Contoh total entri
+
+  const columns: ColumnDef<TDocument>[] = [
+    {
+      accessorKey: 'id',
+      header: 'NO',
+      cell: ({ row }) => <div>{row.index + 1}</div>
+    },
+    {
+      accessorKey: 'fileId',
+      header: 'file id',
+      cell: ({ row }) => <div>{row.getValue('fileId')}</div>
+    },
+    {
+      accessorKey: 'portalID',
+      header: 'PORTAL ID',
+      cell: ({ row }) => <div>{row.getValue('portalID')}</div>
+    },
+    {
+      id: 'document-info',
+      header: 'document name',
+      cell: ({ row }) => (
+        <div className="flex flex-col">
+          <span>{row.original.documentName}</span>
+          <span className="font-semibold text-gray-400">
+            {row.original.documentType}
+          </span>
+        </div>
+      )
+    },
+    {
+      accessorKey: 'dateCreate',
+      header: 'Data Create',
+      cell: ({ row }) => <div>{row.getValue('dateCreate')}</div>
+    },
+    {
+      accessorKey: 'dateUpdate',
+      header: 'Data Update',
+      cell: ({ row }) => <div>{row.getValue('dateUpdate')}</div>
+    },
+    {
+      accessorKey: 'metaData',
+      header: '',
+      cell: ({ row }) => {
+        const isMetaDocument = row.original.metaData === 'Meta Data Document';
+        const color = isMetaDocument ? '#5C47DB' : '#20AB4A';
+
+        return (
+          <div>
+            <Badge
+              className={`bg-[${color}]/10 text-[${color}] hover:bg-[${color}/15]`}
+            >
+              {row.getValue('metaData')}
+            </Badge>
+          </div>
+        );
+      }
+    },
+    {
+      header: 'Action',
+      cell: ({ row }) => (
+        <div>
+          <Button variant="ghost" onClick={() => setModal('detail')}>
+            View
+          </Button>
+          <Button variant="ghost" onClick={() => setModal('edit')}>
+            Edit
+          </Button>
+          <Button
+            className={
+              row.original.metaData === 'Meta Data Document' ? 'hidden' : ''
+            }
+            variant="ghost"
+            onClick={() => setModal('delete')}
+          >
+            Delete
+          </Button>
+        </div>
+      )
+    }
+  ];
 
   return (
     <div>
@@ -160,111 +261,8 @@ const FilesPage = () => {
           Add New File
         </Button>
       </div>
-      <div>
-        <div className="overflow-hidden rounded-lg ">
-          <div className="flex rounded-lg bg-[#5C47DB]  p-4 text-white">
-            <div className="w-[5%] flex-shrink-0 text-center font-medium">
-              NO
-            </div>
-            <div className="w-[15%] flex-shrink-0 text-center font-medium">
-              FILE ID
-            </div>
-            <div className="w-[20%] flex-shrink-0 font-medium">
-              DOCUMENT NAME
-            </div>
-            <div className="w-[20%] flex-shrink-0 font-medium">DESCRIPTION</div>
-            <div className="w-[15%] flex-shrink-0 text-center font-medium">
-              DATA CREATE
-            </div>
-            <div className="w-[15%] flex-shrink-0 text-center font-medium">
-              DATA UPDATE
-            </div>
-            <div className="w-[10%] flex-shrink-0 text-center font-medium">
-              ACTION
-            </div>
-          </div>
 
-          <div className="mt-2 max-h-[500px] divide-y divide-gray-200 overflow-y-auto bg-white shadow-xl">
-            {tableData.map((row, index) => (
-              <div
-                key={row.id}
-                className="flex items-center px-4 py-3 text-sm text-gray-800 hover:bg-gray-50"
-              >
-                <div className="w-[5%] flex-shrink-0 text-center">
-                  {index + 1}
-                </div>
-                <div className="w-[15%] flex-shrink-0 text-center">
-                  {row.fileId}
-                </div>
-                <div className="w-[20%] flex-shrink-0">
-                  <div className="font-semibold">{row.documentName}</div>
-                  <div className="text-xs text-gray-500">
-                    {row.documentType}
-                  </div>
-                </div>
-                <div className="w-[20%] flex-shrink-0">{row.description}</div>
-                <div className="w-[15%] flex-shrink-0 text-center">
-                  {row.dateCreate}
-                </div>
-                <div className="w-[15%] flex-shrink-0 text-center">
-                  {row.dateUpdate}
-                </div>
-                <div className="flex w-[10%] flex-shrink-0 justify-center space-x-2">
-                  <button
-                    className="text-xs font-semibold text-gray-600 hover:text-gray-800"
-                    onClick={() => setModal('detail')}
-                  >
-                    View
-                  </button>
-                  <button
-                    onClick={() => setModal('edit')}
-                    className="text-xs font-semibold text-gray-600 hover:text-gray-800"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => setModal('delete')}
-                    className="text-xs font-semibold text-gray-600 hover:text-gray-800"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-4 flex items-center justify-between rounded-lg bg-[#F8F8F8] px-4 py-3">
-          <div className="text-sm ">
-            Showing {tableData.length * (currentPage - 1) + 1} to{' '}
-            {tableData.length * currentPage} of {totalEntries} entries
-          </div>
-          <div className="flex items-center space-x-2">
-            <span className="text-sm">The page you're on</span>
-            <Select onValueChange={(val) => console.log('Selected:', val)}>
-              <SelectTrigger className="w-[50px] border-none bg-white">
-                <SelectValue defaultValue="1" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="1">1</SelectItem>
-                <SelectItem value="2">2</SelectItem>
-                <SelectItem value="3">3</SelectItem>
-              </SelectContent>
-            </Select>
-            <div className="flex gap-2">
-              <button
-                className="flex h-10 w-10 items-center justify-center rounded-lg border bg-white disabled:cursor-not-allowed disabled:bg-transparent disabled:text-gray-500"
-                disabled
-              >
-                <ArrowLeftIcon className="h-5 w-5" />
-              </button>
-              <button className="flex h-10 w-10 items-center justify-center rounded-lg border bg-white">
-                <ArrowRightIcon className="h-5 w-5" />
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <DataTable pageCount={10} loading={false} data={data} columns={columns} />
 
       <FormModal
         open={modal === 'create'}
