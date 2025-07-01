@@ -1,8 +1,12 @@
 import api from '@/lib/api';
 
-import { TChatRequest, TClearChatRequest, TGetHistoryRequest } from './type';
-
-import { TDefaultResponse } from '../../commons/types/response';
+import {
+  TChatRequest,
+  TClearChatRequest,
+  TGetHistoryRequest,
+  TNewSesionResponse
+} from './type';
+import { TDefaultResponse } from '@/commons/types/response';
 
 export const chat = async (req: TChatRequest): Promise<TDefaultResponse> => {
   const res = await api.post<TDefaultResponse>('/ask', req);
@@ -16,9 +20,12 @@ export const clearChat = async (
   return res.data;
 };
 
-export const getHistory = async (
-  req: TClearChatRequest
-): Promise<TGetHistoryRequest> => {
-  const res = await api.post<TGetHistoryRequest>('/get-history', req);
+export const newChat = async (): Promise<TNewSesionResponse> => {
+  const res = await api.post<TNewSesionResponse>('/new-chat');
+  return res.data;
+};
+
+export const getHistory = async (): Promise<TGetHistoryRequest> => {
+  const res = await api.get<TGetHistoryRequest>('/recent-chat');
   return res.data;
 };

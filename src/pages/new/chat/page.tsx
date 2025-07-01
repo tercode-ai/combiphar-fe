@@ -8,8 +8,9 @@ import {
   PlusCircledIcon,
   ReloadIcon
 } from '@radix-ui/react-icons';
-import { SetStateAction, useState } from 'react';
+import { SetStateAction, useEffect, useState } from 'react';
 import useCreateChat from './_hook/use-create-chat';
+import useCreateNewChat from './_hook/use-create-new-chat';
 
 const ChatPage = () => {
   const promptSuggestions = [
@@ -40,20 +41,36 @@ const ChatPage = () => {
   };
 
   const [chat, setChat] = useState<ChatResult | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  console.log('CEK CHAT', chat?.result);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [sessionId, setSessionId] = useState<string>();
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setText(e.target.value);
   };
 
   const mutation = useCreateChat();
-  console.log('CEK CEK', mutation);
+  const createNewChat = useCreateNewChat();
+
   const payload = {
     question: text,
-    session_id: '123e4567-e89b-12d3-a456-426614174000'
+    session_id: sessionId || ''
   };
+
+  useEffect(() => {
+    console.log('MASUK SESION 1', sessionId);
+    if (!sessionId) {
+      createNewChat.mutate(undefined, {
+        onSuccess: (data) => {
+          console.log('MASUK SESION 2');
+          setSessionId(data.session_id);
+          console.log('data', data);
+        },
+        onError: () => {
+          console.log('SSSS');
+        }
+      });
+    }
+  }, []);
 
   const handleClickItem = (item: SetStateAction<string>) => {
     setText(item);
@@ -64,21 +81,23 @@ const ChatPage = () => {
     setLoading(true);
     mutation.mutate(payload, {
       onSuccess: (data) => {
+        setLoading(false);
         setChat({
           result: data?.result ?? undefined
         });
       },
-      onError: () => {}
+      onError: () => {
+        setLoading(false);
+      }
     });
-    setLoading(false);
   };
-
+  console.log('cek loading', loading);
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col items-center justify-center text-left">
-      {chat && !loading ? (
-        <>{chat?.result?.answer}</>
-      ) : loading ? (
+      {loading ? (
         <>LODING.....</>
+      ) : chat && !loading ? (
+        <>{chat?.result?.answer}</>
       ) : (
         <div className="mx-auto max-w-4xl">
           <h2 className="text-gradient-light text-4xl font-bold">

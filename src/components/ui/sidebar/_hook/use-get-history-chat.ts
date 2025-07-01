@@ -2,9 +2,9 @@ import { useQuery } from '@tanstack/react-query';
 import { getHistory } from '@/api/chat/api';
 import { TClearChatRequest, TGetHistoryRequest } from '@/api/chat/type';
 
-export const useGetFiles = (params: TClearChatRequest) => {
+export const useGetFiles = () => {
   return useQuery<TGetHistoryRequest>({
     queryKey: ['history-chat'],
-    queryFn: async () => getHistory(params)
+    queryFn: async () => getHistory()
   });
 };

@@ -4,6 +4,8 @@ export type TLoginRequest = {
 };
 
 export type TLoginResponse = {
+  authorization: string;
+  message: string;
   data: {
     token: string;
     user: {

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import { SessionToken } from './cookies';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_ENDPOINT,
@@ -9,7 +10,10 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const key = Cookies.get('cm') ?? 'YWRtaW4tY29tYmlwaGFyOmNvbWJpcGhhcioyMDI0';
+  const session = SessionToken.get();
+  const key =
+    session?.access_token ??
+    JSON.parse(Cookies.get('token') || '').access_token;
   if (key) {
     config.headers.Authorization = `Basic ${key}`;
   }

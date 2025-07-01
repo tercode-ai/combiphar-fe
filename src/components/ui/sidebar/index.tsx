@@ -7,17 +7,18 @@ import {
 } from '@radix-ui/react-icons';
 import { Link } from 'react-router-dom';
 import { useGetFiles } from './_hook/use-get-history-chat';
+import { TGetHistoryRequest } from '@/api/chat/type';
 
 type TRecentChats = {
-  id: string;
+  session_id: string;
   title: string;
 };
 
 const Sidebar = () => {
-  const query = useGetFiles({
-    session_id: '123e4567-e89b-12d3-a456-426614174000'
-  });
-  const dataResult = Array.isArray(query.data?.data) ? query.data?.data : [];
+  const query = useGetFiles();
+
+  console.log('MASUK DISINI', query.data?.result);
+  const dataResult = query.data?.result as TRecentChats[] | undefined;
 
   return (
     <aside className="flex w-[296px] flex-col gap-2 bg-[#D2D2D2] p-6">
@@ -49,19 +50,25 @@ const Sidebar = () => {
         </h2>
         <nav>
           <ul>
-            {dataResult.map((chat: TRecentChats, index) => (
-              <li key={index}>
-                <Link
-                  to={`/new/chat/${chat[0]}`}
-                  className="flex items-center justify-between rounded-lg p-2 text-sm text-gray-700 hover:bg-gray-400/20"
-                >
-                  <span className="truncate font-semibold">{chat?.[2]}</span>
-                  <div className="rounded-sm bg-[#C4C4C4] p-[2px] text-gray-900">
-                    <ArrowTopRightIcon className="h-4" />
-                  </div>
-                </Link>
-              </li>
-            ))}
+            {Array.isArray(dataResult) && dataResult.length > 0 ? (
+              dataResult.map((chat: TRecentChats) => (
+                <li key={chat.session_id}>
+                  <Link
+                    to={`/new/chat/${chat.session_id}`}
+                    className="flex items-center justify-between rounded-lg p-2 text-sm text-gray-700 hover:bg-gray-400/20"
+                  >
+                    <span className="truncate font-semibold">
+                      {chat.title || 'Untitled Chat'}
+                    </span>
+                    <div className="rounded-sm bg-[#C4C4C4] p-[2px] text-gray-900">
+                      <ArrowTopRightIcon className="h-4" />
+                    </div>
+                  </Link>
+                </li>
+              ))
+            ) : (
+              <li className="p-2 text-sm text-gray-500">No recent chats</li>
+            )}
           </ul>
         </nav>
       </div>

@@ -23,8 +23,17 @@ export interface TClearChatRequest {
 }
 
 export interface TGetHistoryRequest {
+  result: string[];
+  message: string;
+  index: number;
   data: {
-    data: string[];
+    result: string[];
     message: string;
   };
+}
+
+export interface TNewSesionResponse {
+  message: string;
+  session_id: string;
+  user_id: string;
 }

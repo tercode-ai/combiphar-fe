@@ -13,7 +13,7 @@ type Session = {
     // TODO format response login token
     // refresh_token: string;
     access_token: string;
-    user?: TLoginResponse['data']['user'];
+    // user?: TLoginResponse['data']['user'];
   };
   status?: 'authenticated' | 'authenticating' | 'unauthenticated';
 };
@@ -48,7 +48,7 @@ const SessionProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
     if (!sessionData) return;
 
     const updatedUser = {
-      ...sessionData.user,
+      // ...sessionData.user,
       ...data
     };
 
@@ -65,17 +65,22 @@ const SessionProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
     setStatus('authenticating');
     loginMutation.mutate(payload, {
       onSuccess: (res) => {
+        console.log('MASUK SUKSES', res);
+        const authHeader = res.authorization;
+        const token = authHeader.replace('Basic ', '');
         setSessionData({
-          access_token: res.data.token,
-          user: res.data.user
+          access_token: token
+          // user: res.data.user
         });
+        SessionToken.set({ access_token: token });
 
         setStatus('authenticated');
 
-        SessionUser.set(res.data);
+        // SessionUser.set(res.data);
 
         setTimeout(() => {
-          navigate('/dashboard');
+          console.log('MASUK OKE');
+          navigate('/new/chat');
         }, 600);
       },
       onError: () => {
