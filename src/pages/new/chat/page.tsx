@@ -57,12 +57,10 @@ const ChatPage = () => {
   };
 
   useEffect(() => {
-    console.log('MASUK SESION 1', sessionId);
     if (!sessionId) {
       createNewChat.mutate(undefined, {
         onSuccess: (data) => {
-          console.log('MASUK SESION 2');
-          setSessionId(data.session_id);
+          setSessionId(data.data.session_id);
           console.log('data', data);
         },
         onError: () => {

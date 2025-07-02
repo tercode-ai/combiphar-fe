@@ -36,4 +36,8 @@ export interface TNewSesionResponse {
   message: string;
   session_id: string;
   user_id: string;
+  data: {
+    message: string;
+    session_id: string;
+  };
 }
