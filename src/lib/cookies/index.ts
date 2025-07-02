@@ -5,12 +5,14 @@ type TCookies = {
 };
 
 export const SessionToken = {
-  set: (values: TCookies) => Cookies.set('token', JSON.stringify(values)),
-  get: (): TCookies | undefined => {
+  set: (values: TCookies) => {
+    Cookies.set('token', values.access_token);
+  },
+  get: (): string | undefined => {
     const token = Cookies.get('token');
 
     if (!token) return undefined;
-    return JSON.parse(token);
+    return token;
   },
   remove: () => Cookies.remove('token')
 };

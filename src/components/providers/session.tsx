@@ -63,10 +63,8 @@ const SessionProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
 
   const signin = (payload: TLoginRequest) => {
     setStatus('authenticating');
-    console.log('MASUK MUTATE');
     loginMutation.mutate(payload, {
       onSuccess: (res) => {
-        console.log('MASUK SUKSES', res);
         const authHeader = res.authorization;
         const token = authHeader.replace('Basic ', '');
         setSessionData({
@@ -78,11 +76,6 @@ const SessionProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
         setStatus('authenticated');
 
         // SessionUser.set(res.data);
-
-        setTimeout(() => {
-          console.log('MASUK OKE');
-          navigate('/new/chat');
-        }, 600);
       },
       onError: () => {
         setStatus('unauthenticated');
@@ -97,6 +90,7 @@ const SessionProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
     SessionToken.remove();
     navigate('/auth/login');
   };
+
   return (
     <SessionContext.Provider
       value={{
