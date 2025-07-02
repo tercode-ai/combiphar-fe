@@ -11,6 +11,14 @@ import {
 import { SetStateAction, useEffect, useState } from 'react';
 import useCreateChat from './_hook/use-create-chat';
 import useCreateNewChat from './_hook/use-create-new-chat';
+import { useGetDetailHistory } from './_hook/use-get-history-chat';
+
+type ChatResult = {
+  data?: {
+    answer?: string;
+    source_documents?: string[];
+  };
+};
 
 const ChatPage = () => {
   const promptSuggestions = [
@@ -33,12 +41,6 @@ const ChatPage = () => {
   ];
 
   const [text, setText] = useState('');
-  type ChatResult = {
-    data?: {
-      answer?: string;
-      source_documents?: string[];
-    };
-  };
 
   const [chat, setChat] = useState<ChatResult | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -69,6 +71,12 @@ const ChatPage = () => {
       });
     }
   }, []);
+  const query = useGetDetailHistory({ session_id: sessionId || '' });
+
+  useEffect(() => {
+    const dataResult = query.data;
+    console.log('CEK DATA', dataResult);
+  }, [chat]);
 
   const handleClickItem = (item: SetStateAction<string>) => {
     setText(item);
@@ -81,8 +89,9 @@ const ChatPage = () => {
       onSuccess: (data) => {
         setLoading(false);
         setChat({
-          // data: data?.data ?? undefined
+          data: data?.data ?? undefined
         });
+        setText('');
       },
       onError: () => {
         setLoading(false);

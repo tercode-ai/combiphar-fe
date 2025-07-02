@@ -102,11 +102,15 @@ export default function AppRouter() {
     {
       path: '/404',
       element: <NotFound />
+    },
+    {
+      path: '/',
+      element: <Navigate to="/auth/signin" replace />
+    },
+    {
+      path: '*',
+      element: <Navigate to="/404" replace />
     }
-    // {
-    //   path: '*',
-    //   element: <Navigate to="/404" replace />
-    // }
   ];
 
   const routes = useRoutes([...dashboardRoutes, ...publicRoutes]);

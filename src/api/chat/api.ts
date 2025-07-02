@@ -3,6 +3,7 @@ import api from '@/lib/api';
 import {
   TChatRequest,
   TClearChatRequest,
+  TGetDetailHistoryData,
   TGetHistoryRequest,
   TNewSesionResponse
 } from './type';
@@ -27,5 +28,15 @@ export const newChat = async (): Promise<TNewSesionResponse> => {
 
 export const getHistory = async (): Promise<TGetHistoryRequest> => {
   const res = await api.get<TGetHistoryRequest>('/recent-chat');
+  return res.data;
+};
+
+export const getDetailHistory = async (
+  req: TClearChatRequest
+): Promise<TGetDetailHistoryData> => {
+  console.log('MASUK REQUEST HISTORY', req);
+  const res = await api.get<TGetDetailHistoryData>(
+    `/get-history?session_id=${req.session_id}`
+  );
   return res.data;
 };

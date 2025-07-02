@@ -41,3 +41,18 @@ export interface TNewSesionResponse {
     session_id: string;
   };
 }
+
+export interface Daum {
+  answer: string;
+  created_at: string;
+  id: string;
+  question: string;
+  session_id: string;
+  user_id: string;
+}
+
+export interface TGetDetailHistoryData {
+  data: Daum[];
+  session_id: string;
+  message: string;
+}
