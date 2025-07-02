@@ -21,7 +21,7 @@ export const clearChat = async (
 };
 
 export const newChat = async (): Promise<TNewSesionResponse> => {
-  const res = await api.post<TNewSesionResponse>('/new-chat');
+  const res = await api.get<TNewSesionResponse>('/generate-session');
   return res.data;
 };
 
