@@ -35,9 +35,9 @@ const SessionProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
 
   useEffect(() => {
     const session = SessionToken.get();
-    const user = SessionUser.get();
+    // const user = SessionUser.get();
     if (session) {
-      setSessionData({ ...session, ...user });
+      // setSessionData({ ...session, ...user });
       setStatus('authenticated');
     } else {
       setStatus('unauthenticated');
