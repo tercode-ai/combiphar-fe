@@ -81,7 +81,7 @@ const ChatPage = () => {
       onSuccess: (data) => {
         setLoading(false);
         setChat({
-          data: data?.data ?? undefined
+          // data: data?.data ?? undefined
         });
       },
       onError: () => {
@@ -89,13 +89,12 @@ const ChatPage = () => {
       }
     });
   };
-  console.log('cek loading', loading);
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col items-center justify-center text-left">
       {loading ? (
-        <>LODING.....</>
+        <div style={{ fontWeight: 'bold' }}>LOADING.....</div>
       ) : chat && !loading ? (
-        <>{chat?.data?.answer}</>
+        <div dangerouslySetInnerHTML={{ __html: chat?.data?.answer ?? '' }} />
       ) : (
         <div className="mx-auto max-w-4xl">
           <h2 className="text-gradient-light text-4xl font-bold">
