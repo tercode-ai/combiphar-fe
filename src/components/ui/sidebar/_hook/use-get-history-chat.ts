@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { getHistory } from '@/api/chat/api';
-import { TClearChatRequest, TGetHistoryRequest } from '@/api/chat/type';
+import { TGetHistoryRequest } from '@/api/chat/type';
 
 export const useGetFiles = () => {
   return useQuery<TGetHistoryRequest>({

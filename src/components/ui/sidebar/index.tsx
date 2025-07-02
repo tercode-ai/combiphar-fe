@@ -7,7 +7,6 @@ import {
 } from '@radix-ui/react-icons';
 import { Link } from 'react-router-dom';
 import { useGetFiles } from './_hook/use-get-history-chat';
-import { TGetHistoryRequest } from '@/api/chat/type';
 
 type TRecentChats = {
   session_id: string;
@@ -17,7 +16,6 @@ type TRecentChats = {
 const Sidebar = () => {
   const query = useGetFiles();
 
-  console.log('MASUK DISINI', query.data?.result);
   const dataResult = query.data?.result as TRecentChats[] | undefined;
 
   return (
