@@ -63,6 +63,7 @@ const SessionProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
 
   const signin = (payload: TLoginRequest) => {
     setStatus('authenticating');
+    console.log('MASUK MUTATE');
     loginMutation.mutate(payload, {
       onSuccess: (res) => {
         console.log('MASUK SUKSES', res);
