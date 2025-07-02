@@ -34,7 +34,7 @@ const ChatPage = () => {
 
   const [text, setText] = useState('');
   type ChatResult = {
-    result?: {
+    data?: {
       answer?: string;
       source_documents?: string[];
     };
@@ -81,7 +81,7 @@ const ChatPage = () => {
       onSuccess: (data) => {
         setLoading(false);
         setChat({
-          result: data?.result ?? undefined
+          data: data?.data ?? undefined
         });
       },
       onError: () => {
@@ -95,7 +95,7 @@ const ChatPage = () => {
       {loading ? (
         <>LODING.....</>
       ) : chat && !loading ? (
-        <>{chat?.result?.answer}</>
+        <>{chat?.data?.answer}</>
       ) : (
         <div className="mx-auto max-w-4xl">
           <h2 className="text-gradient-light text-4xl font-bold">

@@ -5,7 +5,7 @@ export type ChatInput = {
 };
 
 export type ChatResponse = {
-  result: ChatResult;
+  data: ChatResult;
 };
 
 export type ChatResult = {

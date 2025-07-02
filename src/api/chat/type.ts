@@ -27,7 +27,7 @@ export interface TGetHistoryRequest {
   message: string;
   index: number;
   data: {
-    result: string[];
+    data: string[];
     message: string;
   };
 }

@@ -16,7 +16,9 @@ type TRecentChats = {
 const Sidebar = () => {
   const query = useGetFiles();
 
-  const dataResult = query.data?.result as TRecentChats[] | undefined;
+  const dataResult = query.data?.data as TRecentChats[] | undefined;
+
+  console.log('MASUK KESINI DATA', dataResult);
 
   return (
     <aside className="flex w-[296px] flex-col gap-2 bg-[#D2D2D2] p-6">

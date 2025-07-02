@@ -29,16 +29,16 @@ const ChatPage = () => {
   const { messages, addChat, setChat, shouldFetch, setFetch } = useChatStore();
 
   const { mutate, isPending } = useChat({
-    onSuccess: ({ result }) => {
+    onSuccess: ({ data }) => {
       addChat({
         id: new Date().getTime().toString(),
         role: 'assistant',
-        message: result.answer,
+        message: data.answer,
         isTyping: true,
         isCopied: false,
         sourceDocument:
-          result.source_documents.length > 1
-            ? getUniqSourceDocument(result.source_documents)
+          data.source_documents.length > 1
+            ? getUniqSourceDocument(data.source_documents)
             : undefined
       });
     }

@@ -6,7 +6,7 @@ export type TResponse<T> = {
   message: string | null;
   status: boolean | null;
   isLoading: boolean | null;
-  result: T;
+  data: T;
 };
 
 export type TPaginationInfo = {
