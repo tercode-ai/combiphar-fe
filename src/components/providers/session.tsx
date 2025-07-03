@@ -16,6 +16,7 @@ type Session = {
     // user?: TLoginResponse['data']['user'];
   };
   status?: 'authenticated' | 'authenticating' | 'unauthenticated';
+  errorMessage: string | null;
 };
 
 const SessionContext = createContext<Session>({
@@ -23,13 +24,15 @@ const SessionContext = createContext<Session>({
   signout: () => {},
   updateSession: () => {},
   session: undefined,
-  status: undefined
+  status: undefined,
+  errorMessage: null
 });
 
 const SessionProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
   const navigate = useNavigate();
   const [sessionData, setSessionData] = useState<Session['session']>();
   const [status, setStatus] = useState<Session['status']>();
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const loginMutation = useLogin();
 
@@ -61,26 +64,47 @@ const SessionProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
     SessionUser.set({ user: updatedUser });
   };
 
-  const signin = (payload: TLoginRequest) => {
+  const signin = async (payload: TLoginRequest) => {
     setStatus('authenticating');
-    loginMutation.mutate(payload, {
-      onSuccess: (res) => {
-        const authHeader = res.authorization;
-        const token = authHeader.replace('Basic ', '');
-        setSessionData({
-          access_token: token
-          // user: res.data.user
-        });
-        SessionToken.set({ access_token: token });
 
-        setStatus('authenticated');
+    try {
+      const res = await loginMutation.mutateAsync(payload);
+      const authHeader = res.data.token;
+      const token = authHeader.replace('Basic ', '');
+      console.log('CEK TOKEN LOGIN', token);
+      setSessionData({
+        access_token: token
+      });
+      SessionToken.set({ access_token: token });
+      setStatus('authenticated');
+      setErrorMessage(null);
 
-        // SessionUser.set(res.data);
-      },
-      onError: () => {
-        setStatus('unauthenticated');
-      }
-    });
+      return res;
+    } catch (error) {
+      setStatus('unauthenticated');
+      throw error;
+    }
+
+    // loginMutation.mutate(payload, {
+    //   onSuccess: (res) => {
+    //     const authHeader = res.authorization;
+    //     const token = authHeader.replace('Basic ', '');
+    //     setSessionData({
+    //       access_token: token
+    //       // user: res.data.user
+    //     });
+    //     SessionToken.set({ access_token: token });
+
+    //     setStatus('authenticated');
+
+    //     // SessionUser.set(res.data);
+    //   },
+    //   onError: (error: any) => {
+    //     setStatus('unauthenticated');
+    //     console.log('MASUK ERROR', error?.response?.data?.message || error.message);
+    //     setErrorMessage(error?.response?.data?.message || error.message);
+    //   }
+    // });
   };
 
   const signout = () => {
@@ -98,7 +122,8 @@ const SessionProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
         status,
         signin,
         signout,
-        updateSession
+        updateSession,
+        errorMessage
       }}
     >
       {children}

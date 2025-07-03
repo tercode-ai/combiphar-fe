@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import * as Form from '@radix-ui/react-form';
 import { EyeOpenIcon, EyeClosedIcon, UpdateIcon } from '@radix-ui/react-icons';
 import { Controller, useForm } from 'react-hook-form';
@@ -11,18 +11,35 @@ import { LoginSchema, TLoginFormData } from './components/schema';
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const { signin, status } = useSession();
+  const [error, setError] = useState('');
   const loading = status === 'authenticating';
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const form = useForm<TLoginFormData>({
     mode: 'onChange',
     resolver: zodResolver(LoginSchema)
   });
 
-  const handleSubmit = (data: TLoginFormData) => {
+  const handleSubmit = async (data: TLoginFormData) => {
     const payload: TLoginRequest = {
       ...data
     };
-    signin(payload);
+    try {
+      await signin(payload);
+    } catch (error) {
+      const errMsg =
+        (error as any)?.response?.data?.message ||
+        (error instanceof Error ? error.message : 'Unknown error');
+      setError(errMsg);
+      setIsModalOpen(true);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setError('');
+    // form.setValue('password','')
+    // form.setValue('username','')
   };
 
   return (
@@ -111,7 +128,6 @@ export default function LoginPage() {
               )}
             />
           </Form.Field>
-
           <Form.Submit asChild>
             <button
               type="submit"
@@ -128,8 +144,40 @@ export default function LoginPage() {
               )}
             </button>
           </Form.Submit>
+          <ErrorModal
+            message={error}
+            isOpen={isModalOpen}
+            onClose={handleCloseModal}
+          />
         </Form.Root>
       </div>
     </div>
   );
 }
+interface ModalProps {
+  message: string;
+  isOpen: boolean;
+  onClose: () => void;
+}
+const ErrorModal: React.FC<ModalProps> = ({ message, isOpen, onClose }) => {
+  if (!isOpen) return null; // If the modal is not open, return nothing
+
+  return (
+    <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
+      <div className="w-full max-w-sm rounded-lg bg-white p-6 shadow-lg">
+        <h3 className="text-center text-lg font-semibold text-red-600">
+          Error
+        </h3>
+        <p className="mt-2 text-center text-sm text-gray-700">{message}</p>
+        <div className="mt-4 flex justify-center">
+          <button
+            onClick={onClose}
+            className="rounded-lg bg-red-600 px-4 py-2 text-white transition-all duration-200 hover:bg-red-500"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};

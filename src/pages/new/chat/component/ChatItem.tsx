@@ -1,3 +1,7 @@
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import Markdown from 'markdown-to-jsx';
+
 export const ChatItem = ({
   question,
   answer
@@ -18,8 +22,14 @@ export const ChatItem = ({
             <img src="/icons/logo-short.png" />
           </div>
         </div>
-        <div className="rounded-lg bg-[#f4f4f5] px-4 py-2 text-sm leading-relaxed text-gray-800">
-          {answer}
+        <div>
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            className="prose prose-sm max-w-full space-y-4 break-words text-justify"
+          >
+            {answer}
+          </ReactMarkdown>
+          {/* <Markdown >{answer}</Markdown> */}
         </div>
       </div>
     </div>

@@ -9,6 +9,7 @@ import { useGetDetailHistory } from '../_hook/use-get-history-chat';
 import { useParams } from 'react-router-dom';
 import { ChatItem } from '../component/ChatItem';
 import useCreateChat from '../_hook/use-create-chat';
+import { Loader } from '../component/Loader';
 
 const DetailPage = () => {
   const { chatId } = useParams();
@@ -106,6 +107,7 @@ const DetailPage = () => {
             </div>
           )}
            */}
+          {query.isLoading && <Loader />}
 
           {query?.data?.data?.map((message, index) => {
             const isLast = index === (query?.data?.data?.length ?? 0) - 1;
