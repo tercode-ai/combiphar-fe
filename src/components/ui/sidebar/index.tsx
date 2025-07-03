@@ -1,5 +1,4 @@
 import {
-  ArrowTopRightIcon,
   FileTextIcon,
   HamburgerMenuIcon,
   PlusIcon,
@@ -8,6 +7,8 @@ import {
 import { Link, useLocation } from 'react-router-dom';
 import { useGetFiles } from './_hook/use-get-history-chat';
 import { SessionToken } from '@/lib/cookies';
+import UserCard from '../user-card';
+import { ScrollArea } from '../scroll-area';
 
 type TRecentChats = {
   session_id: string;
@@ -26,33 +27,38 @@ const Sidebar = () => {
   };
 
   return (
-    <aside className="flex w-[296px] flex-col gap-2 bg-[#D2D2D2] p-6">
-      <button className="flex h-8 w-8 items-center justify-center rounded-lg hover:bg-gray-400/20">
-        <HamburgerMenuIcon className="h-4 text-gray-800" />
-      </button>
+    <aside className="flex w-[296px] flex-col gap-1 bg-[#D2D2D2] p-6">
+      <div>
+        <button className="flex h-8 w-8 items-center justify-center rounded-lg hover:bg-gray-400/20">
+          <HamburgerMenuIcon className="h-4 text-gray-800" />
+        </button>
 
-      <Link
-        to="/new/chat"
-        className="mt-4 flex w-full items-center gap-2 rounded-lg p-2 text-left hover:bg-gray-400/20"
-      >
-        <PlusIcon className="text-gray-800" />
-        <span className="text-gradient-primary font-semibold ">New Chat</span>
-      </Link>
+        <UserCard name="Darlene Robertson" id="#12392832" />
 
-      <Link
-        to="/new/files"
-        className="flex items-center justify-between rounded-lg p-2 text-sm text-gray-700 hover:bg-gray-400/20"
-      >
-        <div className="flex items-center gap-2">
-          <FileTextIcon className="font-bold" />
-          <span className="truncate font-semibold">Document File</span>
-        </div>
-      </Link>
+        <Link
+          to="/new/chat"
+          className="mt-2 flex w-full items-center gap-2 rounded-lg p-2 text-left hover:bg-gray-400/20"
+        >
+          <PlusIcon className="text-gray-800" />
+          <span className="text-gradient-primary font-semibold ">New Chat</span>
+        </Link>
 
-      <div className="mt-6 flex-grow overflow-y-auto">
-        <h2 className="mb-2 p-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
-          Recent Chat
-        </h2>
+        <Link
+          to="/new/files"
+          className="flex items-center justify-between rounded-lg p-2 text-sm text-gray-700 hover:bg-gray-400/20"
+        >
+          <div className="flex items-center gap-2">
+            <FileTextIcon className="font-bold" />
+            <span className="truncate font-semibold">Document File</span>
+          </div>
+        </Link>
+      </div>
+
+      <h2 className="mb-2 p-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
+        Recent Chat
+      </h2>
+
+      <ScrollArea className="flex-grow">
         <nav>
           <ul>
             {Array.isArray(dataResult) && dataResult.length > 0 ? (
@@ -64,7 +70,7 @@ const Sidebar = () => {
                       ${location.pathname === `/new/chat/${chat.session_id}` ? 'bg-gray-400/40 text-black' : 'text-gray-700'}
                     `}
                   >
-                    <span className="truncate">
+                    <span className="w-[65%] truncate">
                       {chat.title || 'Untitled Chat'}
                     </span>
                   </Link>
@@ -75,8 +81,7 @@ const Sidebar = () => {
             )}
           </ul>
         </nav>
-      </div>
-
+      </ScrollArea>
       <div className="mt-auto">
         <a
           href="#"
