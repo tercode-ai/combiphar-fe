@@ -1,5 +1,6 @@
+import { SessionToken } from '@/lib/cookies';
 // import { useAuth } from '@/providers/auth-provider';
-// import { Navigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 interface ProtectedRouteProps {
   children: JSX.Element;
@@ -8,9 +9,10 @@ interface ProtectedRouteProps {
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   // const { isAuthenticated } = useAuth();
 
-  // if (!isAuthenticated) {
-  //   return <Navigate to="/auth/signin" replace />;
-  // }
+  const token = SessionToken.get();
+  if (!token) {
+    return <Navigate to="/auth/signin" replace />;
+  }
 
   return children;
 };

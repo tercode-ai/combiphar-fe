@@ -8,7 +8,6 @@ import {
 import { Link, useLocation } from 'react-router-dom';
 import { useGetFiles } from './_hook/use-get-history-chat';
 import { SessionToken } from '@/lib/cookies';
-import { useLogout } from '@/hooks/auth/use-logout';
 
 type TRecentChats = {
   session_id: string;
@@ -20,13 +19,10 @@ const Sidebar = () => {
 
   const dataResult = query.data?.data as TRecentChats[] | undefined;
   const location = useLocation();
-  const mutation = useLogout();
 
   const handleLogout = () => {
-    const session = SessionToken.get();
-    if (session) {
-      mutation.mutate({ session_id: session || '' });
-    }
+    SessionToken.remove();
+    window.location.href = '/auth/signin';
   };
 
   return (
