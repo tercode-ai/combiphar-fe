@@ -8,10 +8,13 @@ import {
   PlusCircledIcon,
   ReloadIcon
 } from '@radix-ui/react-icons';
-import { SetStateAction, useEffect, useState } from 'react';
+import { SetStateAction, useEffect, useRef, useState } from 'react';
 import useCreateChat from './_hook/use-create-chat';
 import useCreateNewChat from './_hook/use-create-new-chat';
 import { useGetDetailHistory } from './_hook/use-get-history-chat';
+import { ScrollArea } from '@radix-ui/react-scroll-area';
+import { ChatItem } from './component/ChatItem';
+import { Loader } from './component/Loader';
 
 type ChatResult = {
   data?: {
@@ -20,36 +23,31 @@ type ChatResult = {
   };
 };
 
+const promptSuggestions = [
+  {
+    icon: <PersonIcon className=" text-gray-500" />,
+    text: 'Write a to-do list for a personal project or task'
+  },
+  {
+    icon: <EnvelopeClosedIcon className=" text-gray-500" />,
+    text: 'Generate an email or reply to a job offer'
+  },
+  {
+    icon: <ChatBubbleIcon className=" text-gray-500" />,
+    text: 'Summarise this article or text for me in one paragraph'
+  },
+  {
+    icon: <MixerHorizontalIcon className=" text-gray-500" />,
+    text: 'How does AI work in a technical capacity.'
+  }
+];
+
 const ChatPage = () => {
-  const promptSuggestions = [
-    {
-      icon: <PersonIcon className=" text-gray-500" />,
-      text: 'Write a to-do list for a personal project or task'
-    },
-    {
-      icon: <EnvelopeClosedIcon className=" text-gray-500" />,
-      text: 'Generate an email or reply to a job offer'
-    },
-    {
-      icon: <ChatBubbleIcon className=" text-gray-500" />,
-      text: 'Summarise this article or text for me in one paragraph'
-    },
-    {
-      icon: <MixerHorizontalIcon className=" text-gray-500" />,
-      text: 'How does AI work in a technical capacity.'
-    }
-  ];
-
   const [text, setText] = useState('');
-
   const [chat, setChat] = useState<ChatResult | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [sessionId, setSessionId] = useState<string>();
-
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setText(e.target.value);
-  };
-
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
   const mutation = useCreateChat();
   const createNewChat = useCreateNewChat();
 
@@ -58,26 +56,10 @@ const ChatPage = () => {
     session_id: sessionId || ''
   };
 
-  useEffect(() => {
-    if (!sessionId) {
-      createNewChat.mutate(undefined, {
-        onSuccess: (data) => {
-          setSessionId(data.data.session_id);
-          console.log('data', data);
-        },
-        onError: () => {
-          console.log('SSSS');
-        }
-      });
-    }
-  }, []);
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setText(e.target.value);
+  };
   const query = useGetDetailHistory({ session_id: sessionId || '' });
-
-  useEffect(() => {
-    const dataResult = query.data;
-    console.log('CEK DATA', dataResult);
-  }, [chat]);
-
   const handleClickItem = (item: SetStateAction<string>) => {
     setText(item);
   };
@@ -92,18 +74,43 @@ const ChatPage = () => {
           data: data?.data ?? undefined
         });
         setText('');
+        query.refetch();
       },
       onError: () => {
         setLoading(false);
       }
     });
   };
+  useEffect(() => {
+    if (!sessionId) {
+      createNewChat.mutate(undefined, {
+        onSuccess: (data) => {
+          setSessionId(data.data.session_id);
+        },
+        onError: (error) => {
+          console.error('error', error);
+        }
+      });
+    }
+  }, []);
+
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col items-center justify-center text-left">
       {loading ? (
-        <div style={{ fontWeight: 'bold' }}>LOADING.....</div>
+        <Loader />
       ) : chat && !loading ? (
-        <div dangerouslySetInnerHTML={{ __html: chat?.data?.answer ?? '' }} />
+        // <div dangerouslySetInnerHTML={{ __html: chat?.data?.answer ?? '' }} />
+        <ScrollArea className="flex-1" ref={scrollAreaRef}>
+          <div className="min-h-full">
+            {query?.data?.data?.map((message, index) => (
+              <ChatItem
+                key={index}
+                question={message.question}
+                answer={message.answer}
+              />
+            ))}
+          </div>
+        </ScrollArea>
       ) : (
         <div className="mx-auto max-w-4xl">
           <h2 className="text-gradient-light text-4xl font-bold">
@@ -170,4 +177,5 @@ const ChatPage = () => {
     </div>
   );
 };
+
 export default ChatPage;

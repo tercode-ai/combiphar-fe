@@ -34,7 +34,6 @@ export const getHistory = async (): Promise<TGetHistoryRequest> => {
 export const getDetailHistory = async (
   req: TClearChatRequest
 ): Promise<TGetDetailHistoryData> => {
-  console.log('MASUK REQUEST HISTORY', req);
   const res = await api.get<TGetDetailHistoryData>(
     `/get-history?session_id=${req.session_id}`
   );

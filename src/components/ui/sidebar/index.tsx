@@ -5,8 +5,10 @@ import {
   PlusIcon,
   TimerIcon
 } from '@radix-ui/react-icons';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useGetFiles } from './_hook/use-get-history-chat';
+import { SessionToken } from '@/lib/cookies';
+import { useLogout } from '@/hooks/auth/use-logout';
 
 type TRecentChats = {
   session_id: string;
@@ -17,8 +19,15 @@ const Sidebar = () => {
   const query = useGetFiles();
 
   const dataResult = query.data?.data as TRecentChats[] | undefined;
+  const location = useLocation();
+  const mutation = useLogout();
 
-  console.log('MASUK KESINI DATA', dataResult);
+  const handleLogout = () => {
+    const session = SessionToken.get();
+    if (session) {
+      mutation.mutate({ session_id: session || '' });
+    }
+  };
 
   return (
     <aside className="flex w-[296px] flex-col gap-2 bg-[#D2D2D2] p-6">
@@ -55,7 +64,9 @@ const Sidebar = () => {
                 <li key={chat.session_id}>
                   <Link
                     to={`/new/chat/${chat.session_id}`}
-                    className="flex items-center justify-between rounded-lg p-2 text-sm text-gray-700 hover:bg-gray-400/20"
+                    className={`flex items-center justify-between rounded-lg p-2 text-sm hover:bg-gray-400/20
+                      ${location.pathname === `/new/chat/${chat.session_id}` ? 'bg-gray-400/40 text-black' : 'text-gray-700'}
+                    `}
                   >
                     <span className="truncate font-semibold">
                       {chat.title || 'Untitled Chat'}
@@ -81,6 +92,14 @@ const Sidebar = () => {
           <TimerIcon className="mr-3 text-lg" />
           <span>See Full Chat History</span>
         </a>
+        <div className="mt-auto">
+          <button
+            onClick={handleLogout}
+            className="mt-4 flex w-full items-center gap-3 rounded-lg bg-slate-400 p-3 text-sm text-blue-600 hover:bg-[#E0E0E0] "
+          >
+            <span className="w-full text-center font-semibold">Logout</span>
+          </button>
+        </div>
       </div>
     </aside>
   );
