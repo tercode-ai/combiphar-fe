@@ -64,12 +64,9 @@ const Sidebar = () => {
                       ${location.pathname === `/new/chat/${chat.session_id}` ? 'bg-gray-400/40 text-black' : 'text-gray-700'}
                     `}
                   >
-                    <span className="truncate font-semibold">
+                    <span className="truncate">
                       {chat.title || 'Untitled Chat'}
                     </span>
-                    <div className="rounded-sm bg-[#C4C4C4] p-[2px] text-gray-900">
-                      <ArrowTopRightIcon className="h-4" />
-                    </div>
                   </Link>
                 </li>
               ))
