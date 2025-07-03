@@ -4,13 +4,15 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { ChevronDownIcon, MagnifyingGlassIcon } from '@radix-ui/react-icons';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import FormModal from './_components/form-modal';
 import DetailModal from './_components/detail-modal';
 import DeleteModal from './_components/delete-modal';
 import { ColumnDef } from '@tanstack/react-table';
 import { DataTable } from '@/components/shared/data-table';
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { LoaderCircle } from '@/components/shared/loader';
 
 type TDocument = {
   id: number;
@@ -141,6 +143,7 @@ const FilesPage = () => {
   const [modal, setModal] = useState<
     'delete' | 'edit' | 'create' | 'detail' | null
   >(null);
+  const [tab, setTab] = useState('all');
 
   const columns: ColumnDef<TDocument>[] = [
     {
@@ -261,8 +264,28 @@ const FilesPage = () => {
           Add New File
         </Button>
       </div>
-
-      <DataTable pageCount={10} loading={false} data={data} columns={columns} />
+      <Tabs
+        defaultValue="all"
+        onValueChange={(val) => {
+          setTab(val);
+        }}
+      >
+        <TabsList>
+          <TabsTrigger value="all">All Document Files</TabsTrigger>
+          <TabsTrigger value="metadata">Chat Greeting</TabsTrigger>
+          <TabsTrigger value="upload">Chat Greeting</TabsTrigger>
+        </TabsList>
+        <TabsContent value={tab}>
+          <Suspense fallback={<LoaderCircle />}>
+            <DataTable
+              pageCount={10}
+              loading={false}
+              data={data}
+              columns={columns}
+            />
+          </Suspense>
+        </TabsContent>
+      </Tabs>
 
       <FormModal
         open={modal === 'create'}

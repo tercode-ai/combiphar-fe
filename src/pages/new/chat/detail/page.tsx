@@ -60,7 +60,7 @@ const DetailPage = () => {
   return (
     <>
       <ScrollArea className="flex-1">
-        <div className="min-h-full">
+        <div className="mx-auto min-h-full w-[80%]">
           {/* {chat.messages.map((message) => (
             <div
               className={`flex w-full p-4 ${message.isUser ? 'justify-end' : 'justify-start'}`}
@@ -145,7 +145,7 @@ const DetailPage = () => {
           )}
         </div>
       </ScrollArea>
-      <div className="w-full rounded-xl border border-gray-300 bg-white p-4">
+      <div className="mx-auto w-[80%] rounded-xl border border-gray-300 bg-white p-4">
         <textarea
           className="w-full resize-none border-none text-sm outline-none placeholder:text-gray-400"
           rows={4}
