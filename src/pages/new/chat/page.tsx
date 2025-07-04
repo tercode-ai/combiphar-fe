@@ -107,6 +107,7 @@ const ChatPage = () => {
                 key={index}
                 question={message.question}
                 answer={message.answer}
+                sourceDocuments={message.source_documents}
               />
             ))}
           </div>
