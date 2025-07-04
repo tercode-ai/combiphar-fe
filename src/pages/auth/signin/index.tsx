@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import * as Form from '@radix-ui/react-form';
 import { EyeOpenIcon, EyeClosedIcon, UpdateIcon } from '@radix-ui/react-icons';
 import { Controller, useForm } from 'react-hook-form';
