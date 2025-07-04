@@ -272,8 +272,8 @@ const FilesPage = () => {
       >
         <TabsList>
           <TabsTrigger value="all">All Document Files</TabsTrigger>
-          <TabsTrigger value="metadata">Chat Greeting</TabsTrigger>
-          <TabsTrigger value="upload">Chat Greeting</TabsTrigger>
+          <TabsTrigger value="metadata">Metadata Document</TabsTrigger>
+          <TabsTrigger value="upload">Upload Document</TabsTrigger>
         </TabsList>
         <TabsContent value={tab}>
           <Suspense fallback={<LoaderCircle />}>
