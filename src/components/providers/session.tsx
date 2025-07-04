@@ -69,9 +69,9 @@ const SessionProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
 
     try {
       const res = await loginMutation.mutateAsync(payload);
-      const authHeader = res.authorization;
+      // const authHeader = res.authorization;
+      const authHeader = res.data.token;
       const token = authHeader.replace('Basic ', '');
-      console.log('CEK TOKEN LOGIN', token);
       setSessionData({
         access_token: token
       });
