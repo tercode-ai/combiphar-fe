@@ -18,7 +18,9 @@ export const ChatItem = ({
   answer: string;
   sourceDocuments: string;
 }) => {
-  const sourceDocumen = sourceDocuments ? JSON.parse(sourceDocuments) : [];
+  const sourceDocumen: Item[] = sourceDocuments
+    ? JSON.parse(sourceDocuments)
+    : [];
   console.log('CEK sourceDocuments', JSON.parse(sourceDocuments));
 
   return (
@@ -38,12 +40,12 @@ export const ChatItem = ({
           </ReactMarkdown>
           {/* <Markdown >{answer}</Markdown> */}
         </div>
-        {sourceDocumen ? (
+        {sourceDocumen.length ? (
           <div className=" w-full">
             <hr className="mb-2 w-full border-t-4 border-[#C4C4C480]" />
             <div className="font-bold">Referensi Sumber:</div>
-            {sourceDocumen?.map((item: Item, index: any) => (
-              <div id={index} className="text-blue-400">
+            {sourceDocumen?.map((item: Item, index: number) => (
+              <div key={item.metadata.source} className="text-blue-400">
                 {index + 1}. {item.metadata.source}
               </div>
             ))}
