@@ -49,6 +49,7 @@ export interface Daum {
   question: string;
   session_id: string;
   user_id: string;
+  source_documents: string;
 }
 
 export interface TGetDetailHistoryData {

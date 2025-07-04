@@ -1,13 +1,26 @@
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
+interface Item {
+  content: string;
+  metadata: {
+    page: number;
+    source: string;
+  };
+}
+
 export const ChatItem = ({
   question,
-  answer
+  answer,
+  sourceDocuments
 }: {
   question: string;
   answer: string;
+  sourceDocuments: string;
 }) => {
+  const sourceDocumen = sourceDocuments ? JSON.parse(sourceDocuments) : [];
+  console.log('CEK sourceDocuments', JSON.parse(sourceDocuments));
+
   return (
     <div className="mb-10 space-y-4">
       <div className="flex justify-end">
@@ -15,7 +28,7 @@ export const ChatItem = ({
           {question}
         </div>
       </div>
-      <div className="flex items-start space-x-3">
+      <div className="col-auto flex flex-col items-start space-y-3">
         <div>
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
@@ -25,7 +38,42 @@ export const ChatItem = ({
           </ReactMarkdown>
           {/* <Markdown >{answer}</Markdown> */}
         </div>
+        {sourceDocumen ? (
+          <div className=" w-full">
+            <hr className="mb-2 w-full border-t-4 border-[#C4C4C480]" />
+            <div className="font-bold">Referensi Sumber:</div>
+            {sourceDocumen?.map((item: Item, index: any) => (
+              <div id={index} className="text-blue-400">
+                {index + 1}. {item.metadata.source}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <IconBar />
+        )}
       </div>
+    </div>
+  );
+};
+
+const IconBar = () => {
+  return (
+    <div className="flex space-x-4 p-4">
+      <button className="text-gray-600 hover:text-gray-800 focus:outline-none">
+        <img src="/icons/copy.png" />
+      </button>
+      <button className="text-gray-600 hover:text-gray-800 focus:outline-none">
+        <img src="/icons/people.png" />
+      </button>
+      <button className="text-gray-600 hover:text-gray-800 focus:outline-none">
+        <img src="/icons/like.png" />
+      </button>
+      <button className="text-gray-600 hover:text-gray-800 focus:outline-none">
+        <img src="/icons/dislike.png" />
+      </button>
+      <button className="text-gray-600 hover:text-gray-800 focus:outline-none">
+        <img src="/icons/ungah.png" />
+      </button>
     </div>
   );
 };
