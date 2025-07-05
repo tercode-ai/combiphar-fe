@@ -16,7 +16,10 @@ export const capitalizeFirstLetter = (value: string) => {
   return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
 };
 
-export const formatDate = (value: string | Date, format: string) => {
+export const formatDate = (
+  value: string | Date,
+  format: string | undefined = 'DD/MM/YYYY'
+) => {
   return dayjs(value).format(format);
 };
 
