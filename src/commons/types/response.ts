@@ -2,10 +2,7 @@ import { AxiosError } from 'axios';
 import { Nullable } from './common';
 
 export type TResponse<T> = {
-  code: number;
   message: string | null;
-  status: boolean | null;
-  isLoading: boolean | null;
   data: T;
 };
 

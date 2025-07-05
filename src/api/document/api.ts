@@ -1,5 +1,5 @@
 import api from '@/lib/api';
-import { TUploadURLRequest } from './type';
+import { TResponseListDocument, TUploadURLRequest } from './type';
 import { TDefaultResponse } from '@/commons/types/response';
 
 export const deleteAllDocs = async (): Promise<TDefaultResponse> => {
@@ -7,8 +7,8 @@ export const deleteAllDocs = async (): Promise<TDefaultResponse> => {
   return res.data;
 };
 
-export const getDocs = async (): Promise<TDefaultResponse> => {
-  const res = await api.get<TDefaultResponse>('/docs');
+export const getDocs = async (): Promise<TResponseListDocument> => {
+  const res = await api.get<TResponseListDocument>('/documents');
   return res.data;
 };
 

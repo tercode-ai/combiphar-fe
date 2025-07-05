@@ -13,131 +13,9 @@ import { DataTable } from '@/components/shared/data-table';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LoaderCircle } from '@/components/shared/loader';
-
-type TDocument = {
-  id: number;
-  fileId: string;
-  portalID: string;
-  documentName: string;
-  documentType: string;
-  description: string;
-  dateCreate: string;
-  dateUpdate: string;
-  metaData: string;
-};
-
-const data: TDocument[] = [
-  {
-    id: 1,
-    fileId: '1122334455',
-    portalID: 'PORTAL-001',
-    documentName: 'aab-ccdd-eeff-gghh',
-    documentType: 'PDF',
-    description: 'lorem ipsum dolor sit amet',
-    dateCreate: '08-06-2025 08:24',
-    dateUpdate: '08-06-2025 09:10',
-    metaData: 'Meta Data Document'
-  },
-  {
-    id: 2,
-    fileId: '1122334455',
-    portalID: 'PORTAL-002',
-    documentName: 'aab-ccdd-eeff-gghh',
-    documentType: 'PDF',
-    description: 'lorem ipsum dolor sit amet',
-    dateCreate: '08-06-2025 08:24',
-    dateUpdate: '08-06-2025 09:10',
-    metaData: 'Upload Document'
-  },
-  {
-    id: 3,
-    fileId: '1122334455',
-    portalID: 'PORTAL-003',
-    documentName: 'aab-ccdd-eeff-gghh',
-    documentType: 'PDF',
-    description: 'lorem ipsum dolor sit amet',
-    dateCreate: '08-06-2025 08:24',
-    dateUpdate: '08-06-2025 09:10',
-    metaData: 'Meta Data Document'
-  },
-  {
-    id: 4,
-    fileId: '1122334455',
-    portalID: 'PORTAL-004',
-    documentName: 'aab-ccdd-eeff-gghh',
-    documentType: 'PDF',
-    description: 'lorem ipsum dolor sit amet',
-    dateCreate: '08-06-2025 08:24',
-    dateUpdate: '08-06-2025 09:10',
-    metaData: 'Upload Document'
-  },
-  {
-    id: 5,
-    fileId: '1122334455',
-    portalID: 'PORTAL-005',
-    documentName: 'aab-ccdd-eeff-gghh',
-    documentType: 'PDF',
-    description: 'lorem ipsum dolor sit amet',
-    dateCreate: '08-06-2025 08:24',
-    dateUpdate: '08-06-2025 09:10',
-    metaData: 'Meta Data Document'
-  },
-  {
-    id: 6,
-    fileId: '1122334455',
-    portalID: 'PORTAL-006',
-    documentName: 'aab-ccdd-eeff-gghh',
-    documentType: 'PDF',
-    description: 'lorem ipsum dolor sit amet',
-    dateCreate: '08-06-2025 08:24',
-    dateUpdate: '08-06-2025 09:10',
-    metaData: 'Upload Document'
-  },
-  {
-    id: 7,
-    fileId: '1122334455',
-    portalID: 'PORTAL-007',
-    documentName: 'aab-ccdd-eeff-gghh',
-    documentType: 'PDF',
-    description: 'lorem ipsum dolor sit amet',
-    dateCreate: '08-06-2025 08:24',
-    dateUpdate: '08-06-2025 09:10',
-    metaData: 'Meta Data Document'
-  },
-  {
-    id: 8,
-    fileId: '1122334455',
-    portalID: 'PORTAL-008',
-    documentName: 'aab-ccdd-eeff-gghh',
-    documentType: 'PDF',
-    description: 'lorem ipsum dolor sit amet',
-    dateCreate: '08-06-2025 08:24',
-    dateUpdate: '08-06-2025 09:10',
-    metaData: 'Upload Document'
-  },
-  {
-    id: 9,
-    fileId: '1122334455',
-    portalID: 'PORTAL-009',
-    documentName: 'aab-ccdd-eeff-gghh',
-    documentType: 'PDF',
-    description: 'lorem ipsum dolor sit amet',
-    dateCreate: '08-06-2025 08:24',
-    dateUpdate: '08-06-2025 09:10',
-    metaData: 'Meta Data Document'
-  },
-  {
-    id: 10,
-    fileId: '1122334455',
-    portalID: 'PORTAL-010',
-    documentName: 'aab-ccdd-eeff-gghh',
-    documentType: 'PDF',
-    description: 'lorem ipsum dolor sit amet',
-    dateCreate: '08-06-2025 08:24',
-    dateUpdate: '08-06-2025 09:10',
-    metaData: 'Upload Document'
-  }
-];
+import { TDocItem } from '@/api/document/type';
+import useGetListDocument from './_hooks/get-list-document';
+import { formatDate } from '@/lib/utils';
 
 const FilesPage = () => {
   const [modal, setModal] = useState<
@@ -145,49 +23,56 @@ const FilesPage = () => {
   >(null);
   const [tab, setTab] = useState('all');
 
-  const columns: ColumnDef<TDocument>[] = [
+  const query = useGetListDocument();
+
+  const columns: ColumnDef<TDocItem>[] = [
     {
       accessorKey: 'id',
       header: 'NO',
       cell: ({ row }) => <div>{row.index + 1}</div>
     },
     {
-      accessorKey: 'fileId',
+      accessorKey: 'id',
       header: 'file id',
-      cell: ({ row }) => <div>{row.getValue('fileId')}</div>
+      cell: ({ row }) => (
+        <div className="max-w-[150px]">{row.getValue('id')}</div>
+      )
     },
     {
-      accessorKey: 'portalID',
+      accessorKey: 'portal_id',
       header: 'PORTAL ID',
-      cell: ({ row }) => <div>{row.getValue('portalID')}</div>
+      cell: ({ row }) => <div>{row.getValue('portal_id') ?? '-'}</div>
     },
     {
       id: 'document-info',
       header: 'document name',
       cell: ({ row }) => (
         <div className="flex flex-col">
-          <span>{row.original.documentName}</span>
-          <span className="font-semibold text-gray-400">
-            {row.original.documentType}
-          </span>
+          <span>{row.original.document_name?.split('.')[0]}</span>
+          <span className="font-semibold text-gray-400">PDF</span>
         </div>
       )
     },
     {
       accessorKey: 'dateCreate',
       header: 'Data Create',
-      cell: ({ row }) => <div>{row.getValue('dateCreate')}</div>
+      cell: ({ row }) => <div>{formatDate(row.original.created_at)}</div>
     },
     {
       accessorKey: 'dateUpdate',
       header: 'Data Update',
-      cell: ({ row }) => <div>{row.getValue('dateUpdate')}</div>
+      cell: ({ row }) => (
+        <div>
+          {(row.original.updated_at && formatDate(row.original.updated_at)) ||
+            '-'}
+        </div>
+      )
     },
     {
       accessorKey: 'metaData',
       header: '',
       cell: ({ row }) => {
-        const isMetaDocument = row.original.metaData === 'Meta Data Document';
+        const isMetaDocument = row.original.metadata === 'Meta Data Document';
         const color = isMetaDocument ? '#5C47DB' : '#20AB4A';
 
         return (
@@ -195,7 +80,7 @@ const FilesPage = () => {
             <Badge
               className={`bg-[${color}]/10 text-[${color}] hover:bg-[${color}/15]`}
             >
-              {row.getValue('metaData')}
+              TODO
             </Badge>
           </div>
         );
@@ -213,7 +98,7 @@ const FilesPage = () => {
           </Button>
           <Button
             className={
-              row.original.metaData === 'Meta Data Document' ? 'hidden' : ''
+              row.original.metadata === 'Meta Data Document' ? 'hidden' : ''
             }
             variant="ghost"
             onClick={() => setModal('delete')}
@@ -280,7 +165,7 @@ const FilesPage = () => {
             <DataTable
               pageCount={10}
               loading={false}
-              data={data}
+              data={query.data?.data || []}
               columns={columns}
             />
           </Suspense>
